@@ -1,6 +1,7 @@
 ﻿using dot_bioskop.DBContexts;
 using dot_bioskop.Models;
 using dot_bioskop.Services;
+using dot_bioskop.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -16,42 +17,64 @@ namespace dot_bioskop.Controllers
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
-        private ILogger _logger;
-        private IUsersService _usersService;
+        private IUsersData _usersData;
 
-
-        public UsersController(ILogger<UsersController> logger, IUsersService usersService)
+        public UsersController(IUsersData usersData)
         {
-            _logger = logger;
-            _usersService = usersService;
+            _usersData = usersData;
         }
 
-        [HttpGet("/api/users")]
-        public ActionResult<List<users>> GetUsers()
+
+        [HttpGet("/apiNew/users")]
+        public IActionResult getUsers()
         {
-            return _usersService.GetUsers();
+            return Ok(_usersData.GetUsers());
         }
 
-        [HttpPost("/api/users")]
-        public ActionResult<users> AddUsers(users user)
+        [HttpGet("/apiNew/users/{id}")]
+        public IActionResult getUser(int id)
         {
-            _usersService.AddUsers(user);
-            return user;
+            var user = _usersData.GetUser(id);
+            if (user != null){
+                return Ok(user);
+            }
+
+            return NotFound("User tidak diketemukan");
         }
 
-        [HttpPut("/api/users/{id}")]
-        public ActionResult<users> UpdateUsers(int id, users user)
+        [HttpPost("/apiNew/users")]
+        public IActionResult addUser(users user)
         {
-            _usersService.UpdateUsers(id, user);
-            return user;
+            _usersData.AddUser(user);
+            return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + user.id, user);
+
         }
 
-        [HttpDelete("/api/users/{id}")]
-        public ActionResult<string> DeleteUsers(int id)
+        [HttpDelete("/apiNew/users/{id}")]
+        public IActionResult deleteUser(int id)
         {
-            _usersService.DeleteUsers(id);
-            //_logger.LogInformation("users", _usersService);
-            return id.ToString();
+            var user = _usersData.GetUser(id);
+
+            if(user != null)
+            {
+                _usersData.DeleteUser(user);
+                return Ok("User berhasil dihapus");
+            }
+
+            return NotFound("User tidak diketemukan");
+        }
+
+        [HttpPatch("/apiNew/users/{id}")]
+        public IActionResult UpdateUsers(int id, users user)
+        {
+            var existingUser = _usersData.GetUser(id);
+
+            if (existingUser != null)
+            {
+                user.id = existingUser.id;
+                _usersData.UpdateUser(user);
+            }
+            return Ok(user);
         }
     }
 }

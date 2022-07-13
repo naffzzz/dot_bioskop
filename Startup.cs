@@ -12,6 +12,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using dot_bioskop.DBContexts;
 using dot_bioskop.Services;
+using dot_bioskop.Interfaces;
+using dot_bioskop.Datas;
 using Microsoft.EntityFrameworkCore;
 
 namespace dot_bioskop
@@ -32,6 +34,7 @@ namespace dot_bioskop
             services.AddDbContextPool<MyDBContext>(options => options.UseMySql(mySqlConnectionStr, ServerVersion.AutoDetect(mySqlConnectionStr)));
 
             services.AddControllers();
+            services.AddScoped<IUsersData, SqlUsersData>();
             services.AddSingleton<IUsersService, UsersService>();
             services.AddSingleton<IMoviesService, MoviesService>();
             services.AddSingleton<ITagsService, TagsService>(); 
