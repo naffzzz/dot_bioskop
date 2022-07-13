@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using dot_bioskop.DBContexts;
+using dot_bioskop.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace dot_bioskop
@@ -31,6 +32,14 @@ namespace dot_bioskop
             services.AddDbContextPool<MyDBContext>(options => options.UseMySql(mySqlConnectionStr, ServerVersion.AutoDetect(mySqlConnectionStr)));
 
             services.AddControllers();
+            services.AddSingleton<IUsersService, UsersService>();
+            services.AddSingleton<IMoviesService, MoviesService>();
+            services.AddSingleton<ITagsService, TagsService>(); 
+            services.AddSingleton<IStudiosService, StudiosService>(); 
+            services.AddSingleton<IMovieTagsService, MovieTagsService>(); 
+            services.AddSingleton<IOrdersService, OrdersService>(); 
+            services.AddSingleton<IMovieSchedulesService, MovieSchedulesService>(); 
+            services.AddSingleton<IOrderItemsService, OrderItemsService>(); 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,7 +50,7 @@ namespace dot_bioskop
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
