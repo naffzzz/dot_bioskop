@@ -1,13 +1,7 @@
-﻿using dot_bioskop.DBContexts;
-using dot_bioskop.Models;
-using dot_bioskop.Services;
+﻿using dot_bioskop.Models;
+using dot_bioskop.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 
 
 namespace dot_bioskop.Controllers
@@ -16,42 +10,65 @@ namespace dot_bioskop.Controllers
     [Route("[controller]")]
     public class StudiosController : ControllerBase
     {
-        private ILogger _logger;
-        private IStudiosService _studiosService;
+        private IStudiosData _studiosData;
 
-
-        public StudiosController(ILogger<StudiosController> logger, IStudiosService studiosService)
+        public StudiosController(IStudiosData studiosData)
         {
-            _logger = logger;
-            _studiosService = studiosService;
+            _studiosData = studiosData;
         }
 
-        [HttpGet("/api/studios")]
-        public ActionResult<List<studios>> GetStudios()
+
+        [HttpGet("/apiNew/studios")]
+        public IActionResult getStudio()
         {
-            return _studiosService.GetStudios();
+            return Ok(_studiosData.GetStudios());
         }
 
-        [HttpPost("/api/studios")]
-        public ActionResult<studios> AddStudios(studios studio)
+        [HttpGet("/apiNew/studios/{id}")]
+        public IActionResult getStudio(int id)
         {
-            _studiosService.AddStudios(studio);
-            return studio;
+            var studio = _studiosData.GetStudio(id);
+            if (studio != null)
+            {
+                return Ok(studio);
+            }
+
+            return NotFound("Studio tidak diketemukan");
         }
 
-        [HttpPut("/api/studios/{id}")]
-        public ActionResult<studios> UpdateStudios(int id, studios studio)
+        [HttpPost("/apiNew/studios")]
+        public IActionResult addStudio(studios studio)
         {
-            _studiosService.UpdateStudios(id, studio);
-            return studio;
+            _studiosData.AddStudio(studio);
+            return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + studio.id, studio);
+
         }
 
-        [HttpDelete("/api/studios/{id}")]
-        public ActionResult<string> DeleteStudios(int id)
+        [HttpDelete("/apiNew/studios/{id}")]
+        public IActionResult deleteStudio(int id)
         {
-            _studiosService.DeleteStudios(id);
-            //_logger.LogInformation("users", _usersService);
-            return id.ToString();
+            var studio = _studiosData.GetStudio(id);
+
+            if (studio != null)
+            {
+                _studiosData.DeleteStudio(studio);
+                return Ok("Studio berhasil dihapus");
+            }
+
+            return NotFound("Studio tidak diketemukan");
+        }
+
+        [HttpPatch("/apiNew/studios/{id}")]
+        public IActionResult updateStudio(int id, studios studio)
+        {
+            var existingStudio = _studiosData.GetStudio(id);
+
+            if (existingStudio != null)
+            {
+                studio.id = existingStudio.id;
+                _studiosData.UpdateStudio(studio);
+            }
+            return Ok(studio);
         }
     }
 }

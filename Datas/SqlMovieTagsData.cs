@@ -1,0 +1,55 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using dot_bioskop.Interfaces;
+using dot_bioskop.Models;
+using dot_bioskop.DBContexts;
+
+namespace dot_bioskop.Datas
+{
+    public class SqlMovieTagsData : IMovieTagsData
+    {
+        private MyDBContext _myDBContext;
+
+        public SqlMovieTagsData(MyDBContext myDBContext)
+        {
+            _myDBContext = myDBContext;
+        }
+
+        public movie_tags AddMovieTag(movie_tags movie_tag)
+        {
+            _myDBContext.movie_tags.Add(movie_tag);
+            _myDBContext.SaveChanges();
+            return movie_tag;
+        }
+
+        public void DeleteMovieTag(movie_tags movie_tag)
+        {
+            _myDBContext.movie_tags.Remove(movie_tag);
+            _myDBContext.SaveChanges();
+        }
+
+        public movie_tags GetMovieTag(int id)
+        {
+            var movie_tag = _myDBContext.movie_tags.Find(id);
+            return movie_tag;
+        }
+
+        public List<movie_tags> GetMovieTags()
+        {
+            return _myDBContext.movie_tags.ToList();
+        }
+
+        public movie_tags UpdateMovieTag(movie_tags movie_tag)
+        {
+            var existingMovieTag = _myDBContext.movie_tags.Find(movie_tag.id);
+            if(existingMovieTag != null)
+            {
+                existingMovieTag.movie_id = movie_tag.movie_id;
+                existingMovieTag.tag_id = movie_tag.tag_id;
+                _myDBContext.movie_tags.Update(existingMovieTag);
+                _myDBContext.SaveChanges();
+            }
+            return movie_tag;
+        }
+    }
+}

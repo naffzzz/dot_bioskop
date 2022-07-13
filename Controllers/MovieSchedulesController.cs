@@ -1,13 +1,7 @@
-﻿using dot_bioskop.DBContexts;
-using dot_bioskop.Models;
-using dot_bioskop.Services;
+﻿using dot_bioskop.Models;
+using dot_bioskop.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 
 
 namespace dot_bioskop.Controllers
@@ -16,42 +10,65 @@ namespace dot_bioskop.Controllers
     [Route("[controller]")]
     public class MovieSchedulesController : ControllerBase
     {
-        private ILogger _logger;
-        private IMovieSchedulesService _movieSchedulesService;
+        private IMovieSchedulesData _movieSchedulesData;
 
-
-        public MovieSchedulesController(ILogger<MovieSchedulesController> logger, IMovieSchedulesService movieSchedulesService)
+        public MovieSchedulesController(IMovieSchedulesData movieSchedulesData)
         {
-            _logger = logger;
-            _movieSchedulesService = movieSchedulesService;
+            _movieSchedulesData = movieSchedulesData;
         }
 
-        [HttpGet("/api/movieschedules")]
-        public ActionResult<List<movie_schedules>> GetMovieSchedules()
+
+        [HttpGet("/apiNew/movieschedules")]
+        public IActionResult getMovieSchedules()
         {
-            return _movieSchedulesService.GetMovieSchedules();
+            return Ok(_movieSchedulesData.GetMovieSchedules());
         }
 
-        [HttpPost("/api/movieschedules")]
-        public ActionResult<movie_schedules> AddMovieSchedules(movie_schedules movie_schedule)
+        [HttpGet("/apiNew/movieschedules/{id}")]
+        public IActionResult getMovieSchedule(int id)
         {
-            _movieSchedulesService.AddMovieSchedules(movie_schedule);
-            return movie_schedule;
+            var movie_schedule = _movieSchedulesData.GetMovieSchedule(id);
+            if (movie_schedule != null)
+            {
+                return Ok(movie_schedule);
+            }
+
+            return NotFound("Jadwal movie tidak diketemukan");
         }
 
-        [HttpPut("/api/movieschedules/{id}")]
-        public ActionResult<movie_schedules> UpdateMovieSchedules(int id, movie_schedules movie_schedule)
+        [HttpPost("/apiNew/movieschedules")]
+        public IActionResult addMovieSchedule(movie_schedules movie_schedule)
         {
-            _movieSchedulesService.UpdateMovieSchedules(id, movie_schedule);
-            return movie_schedule;
+            _movieSchedulesData.AddMovieSchedule(movie_schedule);
+            return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + movie_schedule.id, movie_schedule);
+
         }
 
-        [HttpDelete("/api/movieschedules/{id}")]
-        public ActionResult<string> DeleteMovieSchedules(int id)
+        [HttpDelete("/apiNew/movieschedules/{id}")]
+        public IActionResult deleteMovieSchedule(int id)
         {
-            _movieSchedulesService.DeleteMovieSchedules(id);
-            //_logger.LogInformation("users", _usersService);
-            return id.ToString();
+            var movie_schedule = _movieSchedulesData.GetMovieSchedule(id);
+
+            if (movie_schedule != null)
+            {
+                _movieSchedulesData.DeleteMovieSchedule(movie_schedule);
+                return Ok("Jadwal movie berhasil dihapus");
+            }
+
+            return NotFound("Jadwal movie tidak diketemukan");
+        }
+
+        [HttpPatch("/apiNew/movieschedules/{id}")]
+        public IActionResult updateMovieSchedules(int id, movie_schedules movie_schedule)
+        {
+            var existingMovieSchedule = _movieSchedulesData.GetMovieSchedule(id);
+
+            if (existingMovieSchedule != null)
+            {
+                movie_schedule.id = existingMovieSchedule.id;
+                _movieSchedulesData.UpdateMovieSchedule(movie_schedule);
+            }
+            return Ok(movie_schedule);
         }
     }
 }

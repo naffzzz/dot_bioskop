@@ -13,6 +13,6 @@ namespace dot_bioskop.Interfaces
 
         movie_tags UpdateMovieTag(movie_tags movie_tag);
 
-        void DeleteUser(movie_tags movie_tag);
+        void DeleteMovieTag(movie_tags movie_tag);
     }
 }

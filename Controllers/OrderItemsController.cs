@@ -1,13 +1,7 @@
-﻿using dot_bioskop.DBContexts;
-using dot_bioskop.Models;
-using dot_bioskop.Services;
+﻿using dot_bioskop.Models;
+using dot_bioskop.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 
 
 namespace dot_bioskop.Controllers
@@ -16,42 +10,65 @@ namespace dot_bioskop.Controllers
     [Route("[controller]")]
     public class OrderItemsController : ControllerBase
     {
-        private ILogger _logger;
-        private IOrderItemsService _orderItemsService;
+        private IOrderItemsData _orderItemsData;
 
-
-        public OrderItemsController(ILogger<OrderItemsController> logger, IOrderItemsService orderItemsService)
+        public OrderItemsController(IOrderItemsData orderItemsData)
         {
-            _logger = logger;
-            _orderItemsService = orderItemsService;
+            _orderItemsData = orderItemsData;
         }
 
-        [HttpGet("/api/orderitems")]
-        public ActionResult<List<order_items>> GetOrderItems()
+
+        [HttpGet("/apiNew/orderitems")]
+        public IActionResult getOrderItems()
         {
-            return _orderItemsService.GetOrderItems();
+            return Ok(_orderItemsData.GetOrderItems());
         }
 
-        [HttpPost("/api/orderitems")]
-        public ActionResult<order_items> AddOrderItems(order_items order_item)
+        [HttpGet("/apiNew/orderitems/{id}")]
+        public IActionResult getOrderItem(int id)
         {
-            _orderItemsService.AddOrderItems(order_item);
-            return order_item;
+            var order_item = _orderItemsData.GetOrderItem(id);
+            if (order_item != null)
+            {
+                return Ok(order_item);
+            }
+
+            return NotFound("Item order tidak diketemukan");
         }
 
-        [HttpPut("/api/orderitems/{id}")]
-        public ActionResult<order_items> UpdateOrderItems(int id, order_items order_item)
+        [HttpPost("/apiNew/orderitems")]
+        public IActionResult addOrderItem(order_items order_item)
         {
-            _orderItemsService.UpdateOrderItems(id, order_item);
-            return order_item;
+            _orderItemsData.AddOrderItem(order_item);
+            return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + order_item.id, order_item);
+
         }
 
-        [HttpDelete("/api/orderitems/{id}")]
-        public ActionResult<string> DeleteOrderItems(int id)
+        [HttpDelete("/apiNew/orderitems/{id}")]
+        public IActionResult deleteOrderItem(int id)
         {
-            _orderItemsService.DeleteOrderItems(id);
-            //_logger.LogInformation("users", _usersService);
-            return id.ToString();
+            var order_item = _orderItemsData.GetOrderItem(id);
+
+            if (order_item != null)
+            {
+                _orderItemsData.DeleteOrderItem(order_item);
+                return Ok("Item order berhasil dihapus");
+            }
+
+            return NotFound("Item order tidak diketemukan");
+        }
+
+        [HttpPatch("/apiNew/orderitems/{id}")]
+        public IActionResult updateOrderItem(int id, order_items order_item)
+        {
+            var existingOderItem= _orderItemsData.GetOrderItem(id);
+
+            if (existingOderItem != null)
+            {
+                order_item.id = existingOderItem.id;
+                _orderItemsData.UpdateOrderItem(order_item);
+            }
+            return Ok(order_item);
         }
     }
 }

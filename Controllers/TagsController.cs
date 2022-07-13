@@ -1,14 +1,7 @@
-﻿using dot_bioskop.DBContexts;
-using dot_bioskop.Models;
-using dot_bioskop.Services;
+﻿using dot_bioskop.Models;
+using dot_bioskop.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-
 
 namespace dot_bioskop.Controllers
 {
@@ -16,42 +9,65 @@ namespace dot_bioskop.Controllers
     [Route("[controller]")]
     public class TagsController : ControllerBase
     {
-        private ILogger _logger;
-        private ITagsService _tagsService;
+        private ITagsData _tagsData;
 
-
-        public TagsController(ILogger<TagsController> logger, ITagsService tagsService)
+        public TagsController(ITagsData tagsData)
         {
-            _logger = logger;
-            _tagsService = tagsService;
+            _tagsData = tagsData;
         }
 
-        [HttpGet("/api/tags")]
-        public ActionResult<List<tags>> GetTags()
+
+        [HttpGet("/apiNew/tags")]
+        public IActionResult getMovieTags()
         {
-            return _tagsService.GetTags();
+            return Ok(_tagsData.GetTags());
         }
 
-        [HttpPost("/api/tags")]
-        public ActionResult<tags> AddTags(tags tag)
+        [HttpGet("/apiNew/tags/{id}")]
+        public IActionResult getMovieTag(int id)
         {
-            _tagsService.AddTags(tag);
-            return tag;
+            var movie = _tagsData.GetTag(id);
+            if (movie != null)
+            {
+                return Ok(movie);
+            }
+
+            return NotFound("Tag tidak diketemukan");
         }
 
-        [HttpPut("/api/tags/{id}")]
-        public ActionResult<tags> UpdateTags(int id, tags tag)
+        [HttpPost("/apiNew/tags")]
+        public IActionResult addMovieTag(tags tag)
         {
-            _tagsService.UpdateTags(id, tag);
-            return tag;
+            _tagsData.AddTag(tag);
+            return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + tag.id, tag);
+
         }
 
-        [HttpDelete("/api/tags/{id}")]
-        public ActionResult<string> DeleteTags(int id)
+        [HttpDelete("/apiNew/tags/{id}")]
+        public IActionResult deleteMovieTag(int id)
         {
-            _tagsService.DeleteTags(id);
-            //_logger.LogInformation("users", _usersService);
-            return id.ToString();
+            var tag = _tagsData.GetTag(id);
+
+            if (tag != null)
+            {
+                _tagsData.DeleteTag(tag);
+                return Ok("Tag berhasil dihapus");
+            }
+
+            return NotFound("Tag tidak diketemukan");
+        }
+
+        [HttpPatch("/apiNew/tags/{id}")]
+        public IActionResult updateMovieTag(int id, tags tag)
+        {
+            var existingTag = _tagsData.GetTag(id);
+
+            if (existingTag != null)
+            {
+                tag.id = existingTag.id;
+                _tagsData.UpdateTag(tag);
+            }
+            return Ok(tag);
         }
     }
 }

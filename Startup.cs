@@ -35,6 +35,14 @@ namespace dot_bioskop
 
             services.AddControllers();
             services.AddScoped<IUsersData, SqlUsersData>();
+            services.AddScoped<IMoviesData, SqlMoviesData>();
+            services.AddScoped<ITagsData, SqlTagsData>();
+            services.AddScoped<IStudiosData, SqlStudiosData>();
+            services.AddScoped<IMovieTagsData, SqlMovieTagsData>();
+            services.AddScoped<IOrdersData, SqlOrdersData>();
+            services.AddScoped<IMovieSchedulesData, SqlMovieSchedulesData>();
+            services.AddScoped<IOrderItemsData, SqlOrderItemsData>();
+
             services.AddSingleton<IUsersService, UsersService>();
             services.AddSingleton<IMoviesService, MoviesService>();
             services.AddSingleton<ITagsService, TagsService>(); 
