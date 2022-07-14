@@ -50,6 +50,7 @@ namespace dot_bioskop.Datas
                 existingMovieSchedule.end_time = movie_schedule.end_time;
                 existingMovieSchedule.price = movie_schedule.price;
                 existingMovieSchedule.date = movie_schedule.date;
+                existingMovieSchedule.updated_at = movie_schedule.updated_at;
                 _myDBContext.movie_schedules.Update(existingMovieSchedule);
                 _myDBContext.SaveChanges();
             }
@@ -62,7 +63,6 @@ namespace dot_bioskop.Datas
             if (existingMovieSchedule != null)
             {
                 existingMovieSchedule.deleted_at = movie_schedule.deleted_at;
-                existingMovieSchedule.updated_at = movie_schedule.updated_at;
                 _myDBContext.movie_schedules.Update(existingMovieSchedule);
                 _myDBContext.SaveChanges();
             }

@@ -119,12 +119,12 @@ namespace dot_bioskop.Controllers
                 _logger.LogInformation("Log deleting available user data ("+id+")");
                 user.id = existingUser.id;
                 _usersData.SoftDeleteUser(user);
-                return Ok(user);
+                return Ok("User berhasil dihapus");
             }
             else
             {
                 _logger.LogInformation("Log deleting unavailable user data (" + id + ")");
-                return NotFound("user tidak diketemukan");
+                return NotFound("User tidak diketemukan");
             }
         }
 
@@ -144,7 +144,7 @@ namespace dot_bioskop.Controllers
             else
             {
                 _logger.LogInformation("Log updating unavailable user data (" + id + ")");
-                return NotFound("user tidak diketemukan");
+                return NotFound("User tidak diketemukan");
             }
         }
     }

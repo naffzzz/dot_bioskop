@@ -83,7 +83,7 @@ namespace dot_bioskop.Controllers
                 _logger.LogInformation("Log soft deleting available specified movies data (" + id + ")");
                 movie.id = existingMovie.id;
                 _moviesData.SoftDeleteMovie(movie);
-                return Ok(movie);
+                return Ok("Movie berhasil dihapus");
             }
             else
             {
@@ -103,7 +103,7 @@ namespace dot_bioskop.Controllers
                 _logger.LogInformation("Log updating available specified movies data (" + id + ")");
                 movie.id = existingMovie.id;
                 _moviesData.UpdateMovie(movie);
-                return Ok(movie);
+                return Ok("Movie berhasil diperbarui");
             }
             else
             {

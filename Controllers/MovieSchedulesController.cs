@@ -72,7 +72,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
-        [HttpPatch("/apiNew/movieschedules/{id}")]
+        [HttpPatch("/api/movieschedules/{id}")]
         public IActionResult SoftDeleteMovieSchedule(int id)
         {
             var movie_schedule = _movieSchedulesData.GetMovieSchedule(id);
@@ -98,11 +98,11 @@ namespace dot_bioskop.Controllers
 
             if (existingMovieSchedule != null)
             {
-                movie_schedule.deleted_at = DateTime.Now;
+                movie_schedule.updated_at = DateTime.Now;
                 _logger.LogInformation("Log updating avalaible specified movie schedules data (" + id + ")");
                 movie_schedule.id = existingMovieSchedule.id;
                 _movieSchedulesData.UpdateMovieSchedule(movie_schedule);
-                return Ok(movie_schedule);
+                return Ok("Jadwal movie berhasil diperbarui");
             }
             else
             {

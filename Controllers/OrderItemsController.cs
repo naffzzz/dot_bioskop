@@ -83,7 +83,7 @@ namespace dot_bioskop.Controllers
                 _logger.LogInformation("Log soft deleting available specified order items data (" + id + ")");
                 order_item.id = existingOderItem.id;
                 _orderItemsData.SoftDeleteOrderItem(order_item);
-                return Ok(order_item);
+                return Ok("Item order berhasil dihapus");
             }
             else
             {
@@ -99,11 +99,11 @@ namespace dot_bioskop.Controllers
 
             if (existingOderItem != null)
             {
-                order_item.deleted_at = DateTime.Now;
+                order_item.updated_at = DateTime.Now;
                 _logger.LogInformation("Log updating available specified order items data (" + id + ")");
                 order_item.id = existingOderItem.id;
                 _orderItemsData.UpdateOrderItem(order_item);
-                return Ok(order_item);
+                return Ok("Item order berhasil diperbarui");
             }
             else
             {

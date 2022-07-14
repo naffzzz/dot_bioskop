@@ -83,7 +83,7 @@ namespace dot_bioskop.Controllers
                 _logger.LogInformation("Log soft deleting available specified orders data (" + id + ")");
                 order.id = existingOder.id;
                 _ordersData.SoftDeleteOrder(order);
-                return Ok(order);
+                return Ok("Order berhasil dihapus");
             }
             else
             {
@@ -103,7 +103,7 @@ namespace dot_bioskop.Controllers
                 _logger.LogInformation("Log updating available specified orders data (" + id + ")");
                 order.id = existingOder.id;
                 _ordersData.UpdateOrder(order);
-                return Ok(order);
+                return Ok("Order berhasil diperbarui");
             }
             else
             {

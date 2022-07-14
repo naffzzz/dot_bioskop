@@ -83,7 +83,7 @@ namespace dot_bioskop.Controllers
                 _logger.LogInformation("Log soft deleting available specified studios data (" + id + ")");
                 studio.id = existingStudio.id;
                 _studiosData.SoftDeleteStudio(studio);
-                return Ok(studio);
+                return Ok("Studio berhasil dihapus");
             }
             else
             {
@@ -103,7 +103,7 @@ namespace dot_bioskop.Controllers
                 _logger.LogInformation("Log updating available specified studios data (" + id + ")");
                 studio.id = existingStudio.id;
                 _studiosData.UpdateStudio(studio);
-                return Ok(studio);
+                return Ok("Studio berhasil dihapus");
             }
             else
             {

@@ -83,7 +83,7 @@ namespace dot_bioskop.Controllers
                 _logger.LogInformation("Log soft deleting available specified tags data (" + id + ")");
                 tag.id = existingTag.id;
                 _tagsData.SoftDeleteTag(tag);
-                return Ok(tag);
+                return Ok("Tag berhasil dihapus");
             }
             else
             {
@@ -103,7 +103,7 @@ namespace dot_bioskop.Controllers
                 _logger.LogInformation("Log updating available specified tags data (" + id + ")");
                 tag.id = existingTag.id;
                 _tagsData.UpdateTag(tag);
-                return Ok(tag);
+                return Ok("Tag berhasil diperbarui");
             }
             else
             {

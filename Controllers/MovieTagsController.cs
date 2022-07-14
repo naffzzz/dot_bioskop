@@ -21,14 +21,14 @@ namespace dot_bioskop.Controllers
         }
 
 
-        [HttpGet("/apiNew/movies")]
+        [HttpGet("/apiNew/movietags")]
         public IActionResult getMovieTags()
         {
             _logger.LogInformation("Log accessing all movie tags data");
             return Ok(_movieTagsData.GetMovieTags());
         }
 
-        [HttpGet("/apiNew/movies/{id}")]
+        [HttpGet("/apiNew/movietags/{id}")]
         public IActionResult GetMovieTag(int id)
         {
             var movie = _movieTagsData.GetMovieTag(id);
@@ -44,7 +44,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
-        [HttpPost("/apiNew/movies")]
+        [HttpPost("/apiNew/movietags")]
         public IActionResult AddMovieTag(movie_tags movie_tag)
         {
             movie_tag.created_at = DateTime.Now;
@@ -54,7 +54,7 @@ namespace dot_bioskop.Controllers
 
         }
 
-        [HttpDelete("/apiNew/movies/{id}")]
+        [HttpDelete("/apiNew/movietags/{id}")]
         public IActionResult DeleteMovieTag(int id)
         {
             var movie_tag = _movieTagsData.GetMovieTag(id);
@@ -72,7 +72,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
-        [HttpPatch("/api/movies/{id}")]
+        [HttpPatch("/api/movietags/{id}")]
         public IActionResult SoftDeleteMovieTag(int id, movie_tags movie_tag)
         {
             var existingMovieTag = _movieTagsData.GetMovieTag(id);
@@ -83,7 +83,7 @@ namespace dot_bioskop.Controllers
                 _logger.LogInformation("Log soft deleting available specified movie tags data (" + id + ")");
                 movie_tag.id = existingMovieTag.id;
                 _movieTagsData.SoftDeleteMovieTag(movie_tag);
-                return Ok(movie_tag);
+                return Ok("Tag Movie berhasil dihapus");
             }
             else
             {
@@ -92,23 +92,23 @@ namespace dot_bioskop.Controllers
             }
         }
 
-        [HttpPatch("/apiNew/movies/{id}")]
+        [HttpPatch("/apiNew/movietags/{id}")]
         public IActionResult UpdateMovieTag(int id, movie_tags movie_tag)
         {
             var existingMovieTag = _movieTagsData.GetMovieTag(id);
 
             if (existingMovieTag != null)
             {
-                movie_tag.deleted_at = DateTime.Now;
+                movie_tag.updated_at = DateTime.Now;
                 _logger.LogInformation("Log updating available specified movie tags data (" + id + ")");
                 movie_tag.id = existingMovieTag.id;
                 _movieTagsData.UpdateMovieTag(movie_tag);
-                return Ok(movie_tag);
+                return Ok("Tag movie berhasil dihapus");
             }
             else
             {
                 _logger.LogInformation("Log updating unavailable specified movie tags data (" + id + ")");
-                return NotFound("Tag Movie tidak diketemukan");
+                return NotFound("Tag movie tidak diketemukan");
             }
         }
     }
