@@ -3,6 +3,8 @@ using dot_bioskop.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Text.RegularExpressions;
+using System;
 
 namespace dot_bioskop.Controllers
 {
@@ -19,6 +21,25 @@ namespace dot_bioskop.Controllers
             _logger = logger;
         }
 
+        public static bool EmailValidation(string emailAddress)
+        {
+            var regex = @"\A(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)\Z";
+            bool isValid = Regex.IsMatch(emailAddress, regex, RegexOptions.IgnoreCase);
+            return isValid;
+        }
+
+        public static string CreateRandomPassword(int PasswordLength)
+        {
+            string _allowedChars = "0123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ";
+            Random randNum = new Random();
+            char[] chars = new char[PasswordLength];
+            int allowedCharCount = _allowedChars.Length;
+            for (int i = 0; i < PasswordLength; i++)
+            {
+                chars[i] = _allowedChars[(int)((_allowedChars.Length) * randNum.NextDouble())];
+            }
+            return new string(chars);
+        }
 
         [HttpGet("/apiNew/users")]
         public IActionResult GetUsers()
@@ -45,10 +66,26 @@ namespace dot_bioskop.Controllers
         [HttpPost("/apiNew/users")]
         public IActionResult AddUser(users user)
         {
-            _logger.LogInformation("Log adding user data");
-            _usersData.AddUser(user);
-            return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + user.id, user);
-
+            if (EmailValidation(user.email) == true)
+            {
+                if (user.password == null)
+                {
+                    user.password = CreateRandomPassword(8);
+                    _logger.LogInformation("Log adding user data");
+                    _usersData.AddUser(user);
+                    return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + user.id, user);
+                }
+                else
+                {
+                    _logger.LogInformation("Log adding user data");
+                    _usersData.AddUser(user);
+                    return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + user.id, user);
+                }
+            }
+            else
+            {
+                return NotFound("Email tidak valid");
+            }
         }
 
         [HttpDelete("/apiNew/users/{id}")]
