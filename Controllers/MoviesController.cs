@@ -2,6 +2,7 @@
 using dot_bioskop.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace dot_bioskop.Controllers
 {
@@ -10,64 +11,82 @@ namespace dot_bioskop.Controllers
     public class MoviesController : ControllerBase
     {
         private IMoviesData _moviesData;
+        private readonly ILogger _logger;
 
-        public MoviesController(IMoviesData moviesData)
+        public MoviesController(ILogger<MoviesController> logger, IMoviesData moviesData)
         {
             _moviesData = moviesData;
+            _logger = logger;
         }
 
 
         [HttpGet("/apiNew/movies")]
-        public IActionResult getMovies()
+        public IActionResult GetMovies()
         {
+            _logger.LogInformation("Log accessing all movies data");
             return Ok(_moviesData.GetMovies());
         }
 
         [HttpGet("/apiNew/movies/{id}")]
-        public IActionResult getMovie(int id)
+        public IActionResult GetMovie(int id)
         {
             var movie = _moviesData.GetMovie(id);
             if (movie != null)
             {
+                _logger.LogInformation("Log accessing available specified movies data");
                 return Ok(movie);
             }
-
-            return NotFound("Movie tidak diketemukan");
+            else
+            {
+                _logger.LogInformation("Log accessing available specified movies data");
+                return NotFound("Movie tidak diketemukan");
+            }
         }
 
         [HttpPost("/apiNew/movies")]
-        public IActionResult addMovie(movies movie)
+        public IActionResult AddMovie(movies movie)
         {
+            _logger.LogInformation("Log adding movies data");
             _moviesData.AddMovie(movie);
             return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + movie.id, movie);
 
         }
 
         [HttpDelete("/apiNew/movies/{id}")]
-        public IActionResult deleteMovie(int id)
+        public IActionResult DeleteMovie(int id)
         {
             var movie = _moviesData.GetMovie(id);
 
             if (movie != null)
             {
+                _logger.LogInformation("Log deleting available specified movies data");
                 _moviesData.DeleteMovie(movie);
                 return Ok("Movie berhasil dihapus");
             }
-
-            return NotFound("Movie tidak diketemukan");
+            else
+            {
+                _logger.LogInformation("Log deleting unavailable specified movies data");
+                return NotFound("Movie tidak diketemukan");
+            }
         }
 
         [HttpPatch("/apiNew/movies/{id}")]
-        public IActionResult updateMovie(int id, movies movie)
+        public IActionResult UpdateMovie(int id, movies movie)
         {
             var existingMovie = _moviesData.GetMovie(id);
 
             if (existingMovie != null)
             {
+                _logger.LogInformation("Log updating available specified movies data");
                 movie.id = existingMovie.id;
                 _moviesData.UpdateMovie(movie);
+                return Ok(movie);
             }
-            return Ok(movie);
+            else
+            {
+                _logger.LogInformation("Log updating unavailable specified movies data");
+                return NotFound("Movie tidak diketemukan");
+            }
         }
     }
 }

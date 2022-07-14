@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using dot_bioskop.DBContexts;
-using dot_bioskop.Services;
 using dot_bioskop.Interfaces;
 using dot_bioskop.Datas;
 using Microsoft.EntityFrameworkCore;
@@ -42,19 +41,10 @@ namespace dot_bioskop
             services.AddScoped<IOrdersData, SqlOrdersData>();
             services.AddScoped<IMovieSchedulesData, SqlMovieSchedulesData>();
             services.AddScoped<IOrderItemsData, SqlOrderItemsData>();
-
-            services.AddSingleton<IUsersService, UsersService>();
-            services.AddSingleton<IMoviesService, MoviesService>();
-            services.AddSingleton<ITagsService, TagsService>(); 
-            services.AddSingleton<IStudiosService, StudiosService>(); 
-            services.AddSingleton<IMovieTagsService, MovieTagsService>(); 
-            services.AddSingleton<IOrdersService, OrdersService>(); 
-            services.AddSingleton<IMovieSchedulesService, MovieSchedulesService>(); 
-            services.AddSingleton<IOrderItemsService, OrderItemsService>(); 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -71,6 +61,16 @@ namespace dot_bioskop
             {
                 endpoints.MapControllers();
             });
+
+            loggerFactory.AddFile("Logs/mylog-{Date}.txt");
+            //app.UseWhen(context => context.Request.Path.StartsWithSegments("/api"), appBuilder =>
+            //{
+                //appBuilder.UseMiddlewareTwo();
+            //});
+            //app.Run(async (context) =>
+            //{
+            //    await context.Response.WriteAsync("Hello World From 1st Middleware");
+            //});
         }
     }
 }
