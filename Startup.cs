@@ -65,7 +65,7 @@ namespace dot_bioskop
             loggerFactory.AddFile("Logs/mylog-{Date}.txt");
             //app.UseWhen(context => context.Request.Path.StartsWithSegments("/api"), appBuilder =>
             //{
-                //appBuilder.UseMiddlewareTwo();
+            //    appBuilder.UsersController();
             //});
             //app.Run(async (context) =>
             //{

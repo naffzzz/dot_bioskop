@@ -41,6 +41,18 @@ namespace dot_bioskop.Datas
             return _myDBContext.users.ToList();
         }
 
+        public users SoftDeleteUser(users user)
+        {
+            var existingUser = _myDBContext.users.Find(user.id);
+            if (existingUser != null)
+            {
+                existingUser.deleted_at = user.deleted_at;
+                _myDBContext.users.Update(existingUser);
+                _myDBContext.SaveChanges();
+            }
+            return user;
+        }
+
         public users UpdateUser(users user)
         {
             var existingUser = _myDBContext.users.Find(user.id);
@@ -51,6 +63,7 @@ namespace dot_bioskop.Datas
                 existingUser.password = user.password;
                 existingUser.avatar = user.avatar;
                 existingUser.is_admin = user.is_admin;
+                existingUser.updated_at = user.updated_at;
                 _myDBContext.users.Update(existingUser);
                 _myDBContext.SaveChanges();
             }

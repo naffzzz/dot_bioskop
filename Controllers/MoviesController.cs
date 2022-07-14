@@ -3,6 +3,7 @@ using dot_bioskop.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace dot_bioskop.Controllers
 {
@@ -33,12 +34,12 @@ namespace dot_bioskop.Controllers
             var movie = _moviesData.GetMovie(id);
             if (movie != null)
             {
-                _logger.LogInformation("Log accessing available specified movies data");
+                _logger.LogInformation("Log accessing available specified movies data (" + id + ")");
                 return Ok(movie);
             }
             else
             {
-                _logger.LogInformation("Log accessing available specified movies data");
+                _logger.LogInformation("Log accessing available specified movies data (" + id + ")");
                 return NotFound("Movie tidak diketemukan");
             }
         }
@@ -46,6 +47,7 @@ namespace dot_bioskop.Controllers
         [HttpPost("/apiNew/movies")]
         public IActionResult AddMovie(movies movie)
         {
+            movie.created_at = DateTime.Now;
             _logger.LogInformation("Log adding movies data");
             _moviesData.AddMovie(movie);
             return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + movie.id, movie);
@@ -59,13 +61,33 @@ namespace dot_bioskop.Controllers
 
             if (movie != null)
             {
-                _logger.LogInformation("Log deleting available specified movies data");
+                _logger.LogInformation("Log deleting available specified movies data (" + id + ")");
                 _moviesData.DeleteMovie(movie);
                 return Ok("Movie berhasil dihapus");
             }
             else
             {
-                _logger.LogInformation("Log deleting unavailable specified movies data");
+                _logger.LogInformation("Log deleting unavailable specified movies data (" + id + ")");
+                return NotFound("Movie tidak diketemukan");
+            }
+        }
+
+        [HttpPatch("/api/movies/{id}")]
+        public IActionResult SoftDeleteMovie(int id, movies movie)
+        {
+            var existingMovie = _moviesData.GetMovie(id);
+
+            if (existingMovie != null)
+            {
+                movie.deleted_at = DateTime.Now;
+                _logger.LogInformation("Log soft deleting available specified movies data (" + id + ")");
+                movie.id = existingMovie.id;
+                _moviesData.SoftDeleteMovie(movie);
+                return Ok(movie);
+            }
+            else
+            {
+                _logger.LogInformation("Log soft deleting unavailable specified movies data (" + id + ")");
                 return NotFound("Movie tidak diketemukan");
             }
         }
@@ -77,14 +99,15 @@ namespace dot_bioskop.Controllers
 
             if (existingMovie != null)
             {
-                _logger.LogInformation("Log updating available specified movies data");
+                movie.updated_at = DateTime.Now;
+                _logger.LogInformation("Log updating available specified movies data (" + id + ")");
                 movie.id = existingMovie.id;
                 _moviesData.UpdateMovie(movie);
                 return Ok(movie);
             }
             else
             {
-                _logger.LogInformation("Log updating unavailable specified movies data");
+                _logger.LogInformation("Log updating unavailable specified movies data (" + id + ")");
                 return NotFound("Movie tidak diketemukan");
             }
         }

@@ -3,6 +3,7 @@ using dot_bioskop.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace dot_bioskop.Controllers
 {
@@ -33,12 +34,12 @@ namespace dot_bioskop.Controllers
             var order_item = _orderItemsData.GetOrderItem(id);
             if (order_item != null)
             {
-                _logger.LogInformation("Log accessing available specified order items data");
+                _logger.LogInformation("Log accessing available specified order items data (" + id + ")");
                 return Ok(order_item);
             }
             else
             {
-                _logger.LogInformation("Log accessing unavailable specified order items data");
+                _logger.LogInformation("Log accessing unavailable specified order items data (" + id + ")");
                 return NotFound("Item order tidak diketemukan");
             }
         }
@@ -46,6 +47,7 @@ namespace dot_bioskop.Controllers
         [HttpPost("/apiNew/orderitems")]
         public IActionResult addOrderItem(order_items order_item)
         {
+            order_item.created_at = DateTime.Now;
             _logger.LogInformation("Log adding order items data");
             _orderItemsData.AddOrderItem(order_item);
             return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + order_item.id, order_item);
@@ -59,13 +61,33 @@ namespace dot_bioskop.Controllers
 
             if (order_item != null)
             {
-                _logger.LogInformation("Log deleting available specified order items data");
+                _logger.LogInformation("Log deleting available specified order items data (" + id + ")");
                 _orderItemsData.DeleteOrderItem(order_item);
                 return Ok("Item order berhasil dihapus");
             }
             else
             {
-                _logger.LogInformation("Log deleting unavailable specified order items data");
+                _logger.LogInformation("Log deleting unavailable specified order items data (" + id + ")");
+                return NotFound("Item order tidak diketemukan");
+            }
+        }
+
+        [HttpPatch("/api/orderitems/{id}")]
+        public IActionResult softDeleteOrderItem(int id, order_items order_item)
+        {
+            var existingOderItem = _orderItemsData.GetOrderItem(id);
+
+            if (existingOderItem != null)
+            {
+                order_item.deleted_at = DateTime.Now;
+                _logger.LogInformation("Log soft deleting available specified order items data (" + id + ")");
+                order_item.id = existingOderItem.id;
+                _orderItemsData.SoftDeleteOrderItem(order_item);
+                return Ok(order_item);
+            }
+            else
+            {
+                _logger.LogInformation("Log soft deleting unavailable specified order items data (" + id + ")");
                 return NotFound("Item order tidak diketemukan");
             }
         }
@@ -77,14 +99,15 @@ namespace dot_bioskop.Controllers
 
             if (existingOderItem != null)
             {
-                _logger.LogInformation("Log updating available specified order items data");
+                order_item.deleted_at = DateTime.Now;
+                _logger.LogInformation("Log updating available specified order items data (" + id + ")");
                 order_item.id = existingOderItem.id;
                 _orderItemsData.UpdateOrderItem(order_item);
                 return Ok(order_item);
             }
             else
             {
-                _logger.LogInformation("Log updating unavailable specified order items data");
+                _logger.LogInformation("Log updating unavailable specified order items data (" + id + ")");
                 return NotFound("Item order tidak diketemukan");
             }
         }

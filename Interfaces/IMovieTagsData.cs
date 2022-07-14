@@ -12,6 +12,7 @@ namespace dot_bioskop.Interfaces
         movie_tags AddMovieTag(movie_tags movie_tag);
 
         movie_tags UpdateMovieTag(movie_tags movie_tag);
+        movie_tags SoftDeleteMovieTag(movie_tags movie_tag);
 
         void DeleteMovieTag(movie_tags movie_tag);
     }

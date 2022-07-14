@@ -13,6 +13,8 @@ namespace dot_bioskop.Interfaces
 
         movies UpdateMovie(movies movie);
 
+        movies SoftDeleteMovie(movies movie);
+
         void DeleteMovie(movies movie);
     }
 }

@@ -13,6 +13,8 @@ namespace dot_bioskop.Interfaces
 
         tags UpdateTag(tags tag);
 
+        tags SoftDeleteTag(tags tag);
+
         void DeleteTag(tags tag);
     }
 }

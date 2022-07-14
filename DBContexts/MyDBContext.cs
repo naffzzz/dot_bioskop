@@ -126,6 +126,11 @@ namespace dot_bioskop.DBContexts
             modelBuilder.Entity<movie_schedules>().HasOne<movies>().WithMany().HasPrincipalKey(m => m.id).HasForeignKey(ms => ms.movie_id).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_movie_schedules_movies");
             modelBuilder.Entity<movie_tags>().HasOne<movies>().WithMany().HasPrincipalKey(m => m.id).HasForeignKey(mt => mt.movie_id).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_movie_tags_movies");
             modelBuilder.Entity<movie_tags>().HasOne<tags>().WithMany().HasPrincipalKey(t => t.id).HasForeignKey(mt => mt.tag_id).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_movie_tags_tags");
+
+            //seeding datas
+            //modelBuilder.Entity<tags>().HasData(
+            //    new { id = 1, name = "Horror", created_at = "0001-01-01T00:00:00" }
+            //);
         }
     }
 }

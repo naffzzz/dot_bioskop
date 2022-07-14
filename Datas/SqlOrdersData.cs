@@ -39,6 +39,18 @@ namespace dot_bioskop.Datas
             return _myDBContext.orders.ToList();
         }
 
+        public orders SoftDeleteOrder(orders order)
+        {
+            var existingOrder = _myDBContext.orders.Find(order.id);
+            if (existingOrder != null)
+            {
+                existingOrder.deleted_at = order.deleted_at;
+                _myDBContext.orders.Update(existingOrder);
+                _myDBContext.SaveChanges();
+            }
+            return order;
+        }
+
         public orders UpdateOrder(orders order)
         {
             var existingOrder = _myDBContext.orders.Find(order.id);
@@ -47,6 +59,7 @@ namespace dot_bioskop.Datas
                 existingOrder.user_id = order.user_id;
                 existingOrder.payment_method = order.payment_method;
                 existingOrder.total_item_price = order.total_item_price;
+                existingOrder.updated_at = order.updated_at;
                 _myDBContext.orders.Update(existingOrder);
                 _myDBContext.SaveChanges();
             }

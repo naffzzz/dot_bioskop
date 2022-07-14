@@ -53,12 +53,12 @@ namespace dot_bioskop.Controllers
         {
             var user = _usersData.GetUser(id);
             if (user != null){
-                _logger.LogInformation("Log accessing available specific user data");
+                _logger.LogInformation("Log accessing available specific user data (" + id + ")");
                 return Ok(user);
             }
             else
             {
-                _logger.LogInformation("Log accessing unavailable specific user data");
+                _logger.LogInformation("Log accessing unavailable specific user data (" + id + ")");
                 return NotFound("User tidak diketemukan");
             }
         }
@@ -68,6 +68,7 @@ namespace dot_bioskop.Controllers
         {
             if (EmailValidation(user.email) == true)
             {
+                user.created_at = DateTime.Now;
                 if (user.password == null)
                 {
                     user.password = CreateRandomPassword(8);
@@ -95,33 +96,54 @@ namespace dot_bioskop.Controllers
 
             if (user != null)
             {
-                _logger.LogInformation("Log deleting available user data");
+                _logger.LogInformation("Log deleting available user data (" + id + ")");
                 _usersData.DeleteUser(user);
                 return Ok("User berhasil dihapus");
             }
             else
             {
-                _logger.LogInformation("Log deleting unavailable user data");
+                _logger.LogInformation("Log deleting unavailable user data (" + id + ")");
                 return NotFound("User tidak diketemukan");
             }
 
         }
 
-        [HttpPatch("/apiNew/users/{id}")]
-        public IActionResult UpdateUsers(int id, users user)
+        [HttpPatch("/api/users/{id}")]
+        public IActionResult SoftDeleteUser(int id, users user)
         {
             var existingUser = _usersData.GetUser(id);
 
             if (existingUser != null)
             {
-                _logger.LogInformation("Log update available user data");
+                user.deleted_at = DateTime.Now;
+                _logger.LogInformation("Log deleting available user data ("+id+")");
+                user.id = existingUser.id;
+                _usersData.SoftDeleteUser(user);
+                return Ok(user);
+            }
+            else
+            {
+                _logger.LogInformation("Log deleting unavailable user data (" + id + ")");
+                return NotFound("user tidak diketemukan");
+            }
+        }
+
+        [HttpPatch("/apiNew/users/{id}")]
+        public IActionResult UpdateUser(int id, users user)
+        {
+            var existingUser = _usersData.GetUser(id);
+
+            if (existingUser != null)
+            {
+                user.updated_at = DateTime.Now;
+                _logger.LogInformation("Log updating available user data (" + id + ")");
                 user.id = existingUser.id;
                 _usersData.UpdateUser(user);
                 return Ok(user);
             }
             else
             {
-                _logger.LogInformation("Log update unavailable user data");
+                _logger.LogInformation("Log updating unavailable user data (" + id + ")");
                 return NotFound("user tidak diketemukan");
             }
         }

@@ -15,28 +15,40 @@ namespace dot_bioskop.Datas
             _myDBContext = myDBContext;
         }
 
-        public tags AddTag(tags movie_schedule)
+        public tags AddTag(tags tag)
         {
-            _myDBContext.tags.Add(movie_schedule);
+            _myDBContext.tags.Add(tag);
             _myDBContext.SaveChanges();
-            return movie_schedule;
+            return tag;
         }
 
-        public void DeleteTag(tags movie_schedule)
+        public void DeleteTag(tags tag)
         {
-            _myDBContext.tags.Remove(movie_schedule);
+            _myDBContext.tags.Remove(tag);
             _myDBContext.SaveChanges();
         }
 
         public tags GetTag(int id)
         {
-            var movie_schedule = _myDBContext.tags.Find(id);
-            return movie_schedule;
+            var tag = _myDBContext.tags.Find(id);
+            return tag;
         }
 
         public List<tags> GetTags()
         {
             return _myDBContext.tags.ToList();
+        }
+
+        public tags SoftDeleteTag(tags tag)
+        {
+            var existingTag = _myDBContext.tags.Find(tag.id);
+            if (existingTag != null)
+            {
+                existingTag.deleted_at = tag.deleted_at;
+                _myDBContext.tags.Update(existingTag);
+                _myDBContext.SaveChanges();
+            }
+            return tag;
         }
 
         public tags UpdateTag(tags tag)
@@ -45,6 +57,7 @@ namespace dot_bioskop.Datas
             if(existingTag != null)
             {
                 existingTag.name = tag.name;
+                existingTag.updated_at = tag.updated_at;
                 _myDBContext.tags.Update(existingTag);
                 _myDBContext.SaveChanges();
             }

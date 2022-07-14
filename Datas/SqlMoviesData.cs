@@ -38,6 +38,17 @@ namespace dot_bioskop.Datas
         {
             return _myDBContext.movies.ToList();
         }
+        public movies SoftDeleteMovie(movies movie)
+        {
+            var existingMovie = _myDBContext.movies.Find(movie.id);
+            if (existingMovie != null)
+            {
+                existingMovie.deleted_at = movie.deleted_at;
+                _myDBContext.movies.Update(existingMovie);
+                _myDBContext.SaveChanges();
+            }
+            return movie;
+        }
 
         public movies UpdateMovie(movies movie)
         {
@@ -48,6 +59,7 @@ namespace dot_bioskop.Datas
                 existingMovie.overview = movie.overview;
                 existingMovie.poster = movie.poster;
                 existingMovie.play_until = movie.play_until;
+                existingMovie.updated_at = movie.updated_at;
                 _myDBContext.movies.Update(existingMovie);
                 _myDBContext.SaveChanges();
             }

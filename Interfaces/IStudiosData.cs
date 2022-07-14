@@ -13,6 +13,8 @@ namespace dot_bioskop.Interfaces
 
         studios UpdateStudio(studios studio);
 
+        studios SoftDeleteStudio(studios studio);
+
         void DeleteStudio(studios studio);
     }
 }

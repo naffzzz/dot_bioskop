@@ -13,6 +13,8 @@ namespace dot_bioskop.Interfaces
 
         orders UpdateOrder(orders order);
 
+        orders SoftDeleteOrder(orders order);
+
         void DeleteOrder(orders order);
     }
 }

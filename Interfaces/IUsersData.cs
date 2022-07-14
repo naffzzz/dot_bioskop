@@ -13,6 +13,8 @@ namespace dot_bioskop.Interfaces
 
         users UpdateUser(users user);
 
+        users SoftDeleteUser(users user);
+
         void DeleteUser(users user);
     }
 }

@@ -10,7 +10,7 @@ using dot_bioskop.DBContexts;
 namespace dot_bioskop.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20220713031919_DBInit")]
+    [Migration("20220714072739_DBInit")]
     partial class DBInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

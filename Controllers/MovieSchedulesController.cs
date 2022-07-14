@@ -3,6 +3,7 @@ using dot_bioskop.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace dot_bioskop.Controllers
 {
@@ -33,12 +34,12 @@ namespace dot_bioskop.Controllers
             var movie_schedule = _movieSchedulesData.GetMovieSchedule(id);
             if (movie_schedule != null)
             {
-                _logger.LogInformation("Log accessing avalaible specified movie schedules data");
+                _logger.LogInformation("Log accessing avalaible specified movie schedules data (" + id + ")");
                 return Ok(movie_schedule);
             }
             else
             {
-                _logger.LogInformation("Log accessing unavalaible specified movie schedules data");
+                _logger.LogInformation("Log accessing unavalaible specified movie schedules data (" + id + ")");
                 return NotFound("Jadwal movie tidak diketemukan");
             }
         }
@@ -46,6 +47,7 @@ namespace dot_bioskop.Controllers
         [HttpPost("/apiNew/movieschedules")]
         public IActionResult AddMovieSchedule(movie_schedules movie_schedule)
         {
+            movie_schedule.created_at = DateTime.Now;
             _logger.LogInformation("Log adding movie schedules data");
             _movieSchedulesData.AddMovieSchedule(movie_schedule);
             return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + movie_schedule.id, movie_schedule);
@@ -59,13 +61,32 @@ namespace dot_bioskop.Controllers
 
             if (movie_schedule != null)
             {
-                _logger.LogInformation("Log deleting avalaible specified movie schedules data");
+                _logger.LogInformation("Log deleting avalaible specified movie schedules data (" + id + ")");
                 _movieSchedulesData.DeleteMovieSchedule(movie_schedule);
                 return Ok("Jadwal movie berhasil dihapus");
             }
             else
             {
-                _logger.LogInformation("Log deleting unavalaible specified movie schedules data");
+                _logger.LogInformation("Log deleting unavalaible specified movie schedules data (" + id + ")");
+                return NotFound("Jadwal movie tidak diketemukan");
+            }
+        }
+
+        [HttpPatch("/apiNew/movieschedules/{id}")]
+        public IActionResult SoftDeleteMovieSchedule(int id)
+        {
+            var movie_schedule = _movieSchedulesData.GetMovieSchedule(id);
+
+            if (movie_schedule != null)
+            {
+                movie_schedule.deleted_at = DateTime.Now;
+                _logger.LogInformation("Log soft deleting avalaible specified movie schedules data (" + id + ")");
+                _movieSchedulesData.SoftDeleteMovieSchedule(movie_schedule);
+                return Ok("Jadwal movie berhasil dihapus");
+            }
+            else
+            {
+                _logger.LogInformation("Log soft deleting unavalaible specified movie schedules data (" + id + ")");
                 return NotFound("Jadwal movie tidak diketemukan");
             }
         }
@@ -77,14 +98,15 @@ namespace dot_bioskop.Controllers
 
             if (existingMovieSchedule != null)
             {
-                _logger.LogInformation("Log updating avalaible specified movie schedules data");
+                movie_schedule.deleted_at = DateTime.Now;
+                _logger.LogInformation("Log updating avalaible specified movie schedules data (" + id + ")");
                 movie_schedule.id = existingMovieSchedule.id;
                 _movieSchedulesData.UpdateMovieSchedule(movie_schedule);
                 return Ok(movie_schedule);
             }
             else
             {
-                _logger.LogInformation("Log updating unavalaible specified movie schedules data");
+                _logger.LogInformation("Log updating unavalaible specified movie schedules data (" + id + ")");
                 return NotFound("Jadwal movie tidak diketemukan");
             }
         }

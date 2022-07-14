@@ -12,6 +12,7 @@ namespace dot_bioskop.Interfaces
         movie_schedules AddMovieSchedule(movie_schedules movie_schedule);
 
         movie_schedules UpdateMovieSchedule(movie_schedules movie_schedule);
+        movie_schedules SoftDeleteMovieSchedule(movie_schedules movie_schedule);
 
         void DeleteMovieSchedule(movie_schedules movie_schedule);
     }

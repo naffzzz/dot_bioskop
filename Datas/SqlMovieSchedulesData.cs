@@ -55,5 +55,18 @@ namespace dot_bioskop.Datas
             }
             return movie_schedule;
         }
+
+        public movie_schedules SoftDeleteMovieSchedule(movie_schedules movie_schedule)
+        {
+            var existingMovieSchedule = _myDBContext.movie_schedules.Find(movie_schedule.id);
+            if (existingMovieSchedule != null)
+            {
+                existingMovieSchedule.deleted_at = movie_schedule.deleted_at;
+                existingMovieSchedule.updated_at = movie_schedule.updated_at;
+                _myDBContext.movie_schedules.Update(existingMovieSchedule);
+                _myDBContext.SaveChanges();
+            }
+            return movie_schedule;
+        }
     }
 }

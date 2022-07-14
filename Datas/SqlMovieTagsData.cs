@@ -39,6 +39,18 @@ namespace dot_bioskop.Datas
             return _myDBContext.movie_tags.ToList();
         }
 
+        public movie_tags SoftDeleteMovieTag(movie_tags movie_tag)
+        {
+            var existingMovieTag = _myDBContext.movie_tags.Find(movie_tag.id);
+            if (existingMovieTag != null)
+            {
+                existingMovieTag.deleted_at = movie_tag.deleted_at;
+                _myDBContext.movie_tags.Update(existingMovieTag);
+                _myDBContext.SaveChanges();
+            }
+            return movie_tag;
+        }
+
         public movie_tags UpdateMovieTag(movie_tags movie_tag)
         {
             var existingMovieTag = _myDBContext.movie_tags.Find(movie_tag.id);
@@ -46,6 +58,7 @@ namespace dot_bioskop.Datas
             {
                 existingMovieTag.movie_id = movie_tag.movie_id;
                 existingMovieTag.tag_id = movie_tag.tag_id;
+                existingMovieTag.updated_at = movie_tag.updated_at;
                 _myDBContext.movie_tags.Update(existingMovieTag);
                 _myDBContext.SaveChanges();
             }
