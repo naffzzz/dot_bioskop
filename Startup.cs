@@ -15,6 +15,8 @@ using dot_bioskop.Interfaces;
 using dot_bioskop.Datas;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
+using FluentValidation.AspNetCore;
+using System.Reflection;
 
 namespace dot_bioskop
 {
@@ -33,7 +35,12 @@ namespace dot_bioskop
             string mySqlConnectionStr = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContextPool<MyDBContext>(options => options.UseMySql(mySqlConnectionStr, ServerVersion.AutoDetect(mySqlConnectionStr)));
 
-            services.AddControllers();
+            services.AddControllers().AddFluentValidation(fv =>
+            {
+                fv.ImplicitlyValidateChildProperties = true;
+                fv.ImplicitlyValidateRootCollectionElements = true;
+                fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            });
             services.AddScoped<IUsersData, SqlUsersData>();
             services.AddScoped<IMoviesData, SqlMoviesData>();
             services.AddScoped<ITagsData, SqlTagsData>();

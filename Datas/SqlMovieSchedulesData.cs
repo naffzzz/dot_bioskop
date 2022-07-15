@@ -31,7 +31,7 @@ namespace dot_bioskop.Datas
 
         public movie_schedules GetMovieSchedule(int id)
         {
-            var movie_schedule = _myDBContext.movie_schedules.Where(b => b.id == id).Include("movie").Include("studio").FirstOrDefault(); 
+            var movie_schedule = _myDBContext.movie_schedules.Where(ms => ms.id == id).Include("movie").Include("studio").FirstOrDefault(); 
             return movie_schedule;
         }
 

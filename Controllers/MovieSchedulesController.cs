@@ -1,9 +1,11 @@
 ﻿using dot_bioskop.Models;
 using dot_bioskop.Interfaces;
+using dot_bioskop.Validations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using FluentValidation.Results;
 
 namespace dot_bioskop.Controllers
 {
@@ -47,11 +49,19 @@ namespace dot_bioskop.Controllers
         [HttpPost("/apiNew/movieschedules")]
         public IActionResult AddMovieSchedule(movie_schedules movie_schedule)
         {
+            MovieSchedulesValidation Obj = new MovieSchedulesValidation();
             movie_schedule.created_at = DateTime.Now;
-            _logger.LogInformation("Log adding movie schedules data");
-            _movieSchedulesData.AddMovieSchedule(movie_schedule);
-            return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + movie_schedule.id, movie_schedule);
-
+            ValidationResult Result = Obj.Validate(movie_schedule);
+            if (Result.IsValid)
+            {
+                _logger.LogInformation("Log adding movie schedules data");
+                _movieSchedulesData.AddMovieSchedule(movie_schedule);
+                return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + movie_schedule.id, movie_schedule);
+            }
+            else
+            {
+                return BadRequest(Result);
+            }
         }
 
         [HttpDelete("/apiNew/movieschedules/{id}")]

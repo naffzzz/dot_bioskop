@@ -1,9 +1,11 @@
 ﻿using dot_bioskop.Models;
 using dot_bioskop.Interfaces;
+using dot_bioskop.Validations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using FluentValidation.Results;
 
 namespace dot_bioskop.Controllers
 {
@@ -47,11 +49,19 @@ namespace dot_bioskop.Controllers
         [HttpPost("/apiNew/orderitems")]
         public IActionResult addOrderItem(order_items order_item)
         {
+            OrderItemsValidation Obj = new OrderItemsValidation();
             order_item.created_at = DateTime.Now;
-            _logger.LogInformation("Log adding order items data");
-            _orderItemsData.AddOrderItem(order_item);
-            return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + order_item.id, order_item);
-
+            ValidationResult Result = Obj.Validate(order_item);
+            if (Result.IsValid)
+            {
+                _logger.LogInformation("Log adding order items data");
+                _orderItemsData.AddOrderItem(order_item);
+                return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + order_item.id, order_item);
+            }
+            else
+            {
+                return BadRequest(Result);
+            }
         }
 
         [HttpDelete("/apiNew/orderitems/{id}")]

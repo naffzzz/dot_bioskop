@@ -1,9 +1,11 @@
 ﻿using dot_bioskop.Models;
 using dot_bioskop.Interfaces;
+using dot_bioskop.Validations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using FluentValidation.Results;
 
 namespace dot_bioskop.Controllers
 {
@@ -47,11 +49,19 @@ namespace dot_bioskop.Controllers
         [HttpPost("/apiNew/movietags")]
         public IActionResult AddMovieTag(movie_tags movie_tag)
         {
+            MovieTagsValidation Obj = new MovieTagsValidation();
             movie_tag.created_at = DateTime.Now;
-            _logger.LogInformation("Log adding tags movie data");
-            _movieTagsData.AddMovieTag(movie_tag);
-            return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + movie_tag.id, movie_tag);
-
+            ValidationResult Result = Obj.Validate(movie_tag);
+            if (Result.IsValid)
+            {
+                _logger.LogInformation("Log adding tags movie data");
+                _movieTagsData.AddMovieTag(movie_tag);
+                return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + movie_tag.id, movie_tag);
+            }
+            else
+            {
+                return BadRequest(Result);
+            }
         }
 
         [HttpDelete("/apiNew/movietags/{id}")]

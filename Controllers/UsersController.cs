@@ -1,10 +1,12 @@
 ﻿using dot_bioskop.Models;
 using dot_bioskop.Interfaces;
+using dot_bioskop.Validations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 using System;
+using FluentValidation.Results;
 
 namespace dot_bioskop.Controllers
 {
@@ -66,15 +68,24 @@ namespace dot_bioskop.Controllers
         [HttpPost("/apiNew/users")]
         public IActionResult AddUser(users user)
         {
+            UsersValidation Obj = new UsersValidation();
             if (EmailValidation(user.email) == true)
             {
                 user.created_at = DateTime.Now;
                 if (user.password == null)
                 {
                     user.password = CreateRandomPassword(8);
-                    _logger.LogInformation("Log adding user data");
-                    _usersData.AddUser(user);
-                    return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + user.id, user);
+                    ValidationResult Result = Obj.Validate(user);
+                    if (Result.IsValid)
+                    {
+                        _logger.LogInformation("Log adding user data");
+                        _usersData.AddUser(user);
+                        return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + user.id, user);
+                    }
+                    else
+                    {
+                        return BadRequest(Result);
+                    }
                 }
                 else
                 {

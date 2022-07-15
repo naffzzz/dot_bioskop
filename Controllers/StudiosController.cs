@@ -1,9 +1,11 @@
 ﻿using dot_bioskop.Models;
 using dot_bioskop.Interfaces;
+using dot_bioskop.Validations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using FluentValidation.Results;
 
 namespace dot_bioskop.Controllers
 {
@@ -47,11 +49,19 @@ namespace dot_bioskop.Controllers
         [HttpPost("/apiNew/studios")]
         public IActionResult AddStudio(studios studio)
         {
+            StudiosValidation Obj = new StudiosValidation();
             studio.created_at = DateTime.Now;
-            _logger.LogInformation("Log adding studios data");
-            _studiosData.AddStudio(studio);
-            return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + studio.id, studio);
-
+            ValidationResult Result = Obj.Validate(studio);
+            if (Result.IsValid)
+            {
+                _logger.LogInformation("Log adding studios data");
+                _studiosData.AddStudio(studio);
+                return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + studio.id, studio);
+            }
+            else
+            {
+                return BadRequest(Result);
+            }
         }
 
         [HttpDelete("/apiNew/studios/{id}")]

@@ -1,9 +1,11 @@
 ﻿using dot_bioskop.Models;
 using dot_bioskop.Interfaces;
+using dot_bioskop.Validations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using FluentValidation.Results;
 
 namespace dot_bioskop.Controllers
 {
@@ -13,6 +15,7 @@ namespace dot_bioskop.Controllers
     {
         private ITagsData _tagsData;
         private readonly ILogger _logger;
+        private readonly TagsValidation _tagsValidation;
 
         public TagsController(ILogger<TagsController> logger, ITagsData tagsData)
         {
@@ -47,11 +50,19 @@ namespace dot_bioskop.Controllers
         [HttpPost("/apiNew/tags")]
         public IActionResult AddTag(tags tag)
         {
+            TagsValidation Obj = new TagsValidation();
             tag.created_at = DateTime.Now;
-            _logger.LogInformation("Log adding tags data");
-            _tagsData.AddTag(tag);
-            return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + tag.id, tag);
-
+            ValidationResult Result = Obj.Validate(tag);
+            if (Result.IsValid)
+            {
+                _logger.LogInformation("Log adding tags data");
+                _tagsData.AddTag(tag);
+                return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + tag.id, tag);
+            }
+            else
+            {
+                return BadRequest(Result);
+            }
         }
 
         [HttpDelete("/apiNew/tags/{id}")]
