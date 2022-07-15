@@ -3,6 +3,7 @@ using System.Linq;
 using dot_bioskop.Interfaces;
 using dot_bioskop.Models;
 using dot_bioskop.DBContexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace dot_bioskop.Datas
 {
@@ -30,13 +31,13 @@ namespace dot_bioskop.Datas
 
         public movie_schedules GetMovieSchedule(int id)
         {
-            var movie_schedule = _myDBContext.movie_schedules.Find(id);
+            var movie_schedule = _myDBContext.movie_schedules.Where(b => b.id == id).Include("movie").Include("studio").FirstOrDefault(); 
             return movie_schedule;
         }
 
         public List<movie_schedules> GetMovieSchedules()
         {
-            return _myDBContext.movie_schedules.ToList();
+            return _myDBContext.movie_schedules.Include("movie").Include("studio").ToList();
         }
 
         public movie_schedules UpdateMovieSchedule(movie_schedules movie_schedule)

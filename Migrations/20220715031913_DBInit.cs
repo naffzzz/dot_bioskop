@@ -113,10 +113,22 @@ namespace dot_bioskop.Migrations
                         principalTable: "movies",
                         principalColumn: "id");
                     table.ForeignKey(
+                        name: "FK_movie_schedules_movies_id",
+                        column: x => x.id,
+                        principalTable: "movies",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_movie_schedules_studios",
                         column: x => x.studio_id,
                         principalTable: "studios",
                         principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_movie_schedules_studios_id",
+                        column: x => x.id,
+                        principalTable: "studios",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -141,10 +153,22 @@ namespace dot_bioskop.Migrations
                         principalTable: "movies",
                         principalColumn: "id");
                     table.ForeignKey(
+                        name: "FK_movie_tags_movies_id",
+                        column: x => x.id,
+                        principalTable: "movies",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_movie_tags_tags",
                         column: x => x.tag_id,
                         principalTable: "tags",
                         principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_movie_tags_tags_id",
+                        column: x => x.id,
+                        principalTable: "tags",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -170,6 +194,12 @@ namespace dot_bioskop.Migrations
                         column: x => x.user_id,
                         principalTable: "users",
                         principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_orders_users_id",
+                        column: x => x.id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -197,12 +227,34 @@ namespace dot_bioskop.Migrations
                         principalTable: "movie_schedules",
                         principalColumn: "id");
                     table.ForeignKey(
+                        name: "FK_order_items_movie_schedules_id",
+                        column: x => x.id,
+                        principalTable: "movie_schedules",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_order_items_orders",
                         column: x => x.order_id,
                         principalTable: "orders",
                         principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_order_items_orders_id",
+                        column: x => x.id,
+                        principalTable: "orders",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.InsertData(
+                table: "tags",
+                columns: new[] { "id", "created_at", "deleted_at", "name", "updated_at" },
+                values: new object[] { 1L, new DateTime(2022, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Horror", null });
+
+            migrationBuilder.InsertData(
+                table: "tags",
+                columns: new[] { "id", "created_at", "deleted_at", "name", "updated_at" },
+                values: new object[] { 2L, new DateTime(2022, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), null, "Comedy", null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_movie_schedules_movie_id",

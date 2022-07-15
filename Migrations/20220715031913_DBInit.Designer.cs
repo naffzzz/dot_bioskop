@@ -10,7 +10,7 @@ using dot_bioskop.DBContexts;
 namespace dot_bioskop.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20220714072739_DBInit")]
+    [Migration("20220715031913_DBInit")]
     partial class DBInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -262,6 +262,20 @@ namespace dot_bioskop.Migrations
                         .HasName("PK_tags");
 
                     b.ToTable("tags");
+
+                    b.HasData(
+                        new
+                        {
+                            id = 1L,
+                            created_at = new DateTime(2022, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            name = "Horror"
+                        },
+                        new
+                        {
+                            id = 2L,
+                            created_at = new DateTime(2022, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            name = "Comedy"
+                        });
                 });
 
             modelBuilder.Entity("dot_bioskop.Models.users", b =>
@@ -307,6 +321,18 @@ namespace dot_bioskop.Migrations
 
             modelBuilder.Entity("dot_bioskop.Models.movie_schedules", b =>
                 {
+                    b.HasOne("dot_bioskop.Models.movies", "movie")
+                        .WithMany()
+                        .HasForeignKey("id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dot_bioskop.Models.studios", "studio")
+                        .WithMany()
+                        .HasForeignKey("id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("dot_bioskop.Models.movies", null)
                         .WithMany()
                         .HasForeignKey("movie_id")
@@ -320,10 +346,26 @@ namespace dot_bioskop.Migrations
                         .HasConstraintName("FK_movie_schedules_studios")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("movie");
+
+                    b.Navigation("studio");
                 });
 
             modelBuilder.Entity("dot_bioskop.Models.movie_tags", b =>
                 {
+                    b.HasOne("dot_bioskop.Models.movies", "movie")
+                        .WithMany()
+                        .HasForeignKey("id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dot_bioskop.Models.tags", "tag")
+                        .WithMany()
+                        .HasForeignKey("id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("dot_bioskop.Models.movies", null)
                         .WithMany()
                         .HasForeignKey("movie_id")
@@ -337,10 +379,26 @@ namespace dot_bioskop.Migrations
                         .HasConstraintName("FK_movie_tags_tags")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("movie");
+
+                    b.Navigation("tag");
                 });
 
             modelBuilder.Entity("dot_bioskop.Models.order_items", b =>
                 {
+                    b.HasOne("dot_bioskop.Models.movie_schedules", "movie_schedule")
+                        .WithMany()
+                        .HasForeignKey("id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dot_bioskop.Models.orders", "order")
+                        .WithMany()
+                        .HasForeignKey("id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("dot_bioskop.Models.movie_schedules", null)
                         .WithMany()
                         .HasForeignKey("movie_schedule_id")
@@ -354,16 +412,28 @@ namespace dot_bioskop.Migrations
                         .HasConstraintName("FK_order_items_orders")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("movie_schedule");
+
+                    b.Navigation("order");
                 });
 
             modelBuilder.Entity("dot_bioskop.Models.orders", b =>
                 {
+                    b.HasOne("dot_bioskop.Models.users", "user")
+                        .WithMany()
+                        .HasForeignKey("id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("dot_bioskop.Models.users", null)
                         .WithMany()
                         .HasForeignKey("user_id")
                         .HasConstraintName("FK_orders_users")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("user");
                 });
 #pragma warning restore 612, 618
         }

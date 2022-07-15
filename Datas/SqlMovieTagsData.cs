@@ -3,6 +3,7 @@ using System.Linq;
 using dot_bioskop.Interfaces;
 using dot_bioskop.Models;
 using dot_bioskop.DBContexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace dot_bioskop.Datas
 {
@@ -30,13 +31,13 @@ namespace dot_bioskop.Datas
 
         public movie_tags GetMovieTag(int id)
         {
-            var movie_tag = _myDBContext.movie_tags.Find(id);
+            var movie_tag = _myDBContext.movie_tags.Where(b => b.id == id).Include("tag").Include("movie").FirstOrDefault();
             return movie_tag;
         }
 
         public List<movie_tags> GetMovieTags()
         {
-            return _myDBContext.movie_tags.ToList();
+            return _myDBContext.movie_tags.Include("tag").Include("movie").ToList();
         }
 
         public movie_tags SoftDeleteMovieTag(movie_tags movie_tag)

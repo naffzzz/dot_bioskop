@@ -128,9 +128,10 @@ namespace dot_bioskop.DBContexts
             modelBuilder.Entity<movie_tags>().HasOne<tags>().WithMany().HasPrincipalKey(t => t.id).HasForeignKey(mt => mt.tag_id).OnDelete(DeleteBehavior.NoAction).HasConstraintName("FK_movie_tags_tags");
 
             //seeding datas
-            //modelBuilder.Entity<tags>().HasData(
-            //    new { id = 1, name = "Horror", created_at = "0001-01-01T00:00:00" }
-            //);
+            modelBuilder.Entity<tags>().HasData(
+                new { id = 1, name = "Horror", created_at = DateTime.Parse("2022-07-15T00:00:00")},
+                new { id = 2, name = "Comedy", created_at = DateTime.Parse("2022-07-15T00:00:00")}
+            );
         }
     }
 }

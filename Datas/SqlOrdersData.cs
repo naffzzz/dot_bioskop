@@ -3,6 +3,7 @@ using System.Linq;
 using dot_bioskop.Interfaces;
 using dot_bioskop.Models;
 using dot_bioskop.DBContexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace dot_bioskop.Datas
 {
@@ -30,13 +31,13 @@ namespace dot_bioskop.Datas
 
         public orders GetOrder(int id)
         {
-            var order = _myDBContext.orders.Find(id);
+            var order = _myDBContext.orders.Where(b => b.id == id).Include("user").FirstOrDefault();
             return order;
         }
 
         public List<orders> GetOrders()
         {
-            return _myDBContext.orders.ToList();
+            return _myDBContext.orders.Include("user").ToList();
         }
 
         public orders SoftDeleteOrder(orders order)

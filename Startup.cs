@@ -14,6 +14,7 @@ using dot_bioskop.DBContexts;
 using dot_bioskop.Interfaces;
 using dot_bioskop.Datas;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace dot_bioskop
 {
@@ -62,15 +63,12 @@ namespace dot_bioskop
                 endpoints.MapControllers();
             });
 
+
             loggerFactory.AddFile("Logs/mylog-{Date}.txt");
-            //app.UseWhen(context => context.Request.Path.StartsWithSegments("/api"), appBuilder =>
-            //{
-            //    appBuilder.UsersController();
-            //});
-            //app.Run(async (context) =>
-            //{
-            //    await context.Response.WriteAsync("Hello World From 1st Middleware");
-            //});
+            app.Run(async (context) =>
+            {
+                await context.Response.WriteAsync("Server is running");
+            });
         }
     }
 }

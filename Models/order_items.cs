@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,5 +17,11 @@ namespace dot_bioskop.Models
         public DateTime created_at { get; set; }
         public DateTime? updated_at { get; set; }
         public DateTime? deleted_at { get; set; }
+
+        [ForeignKey("id")]
+        public movie_schedules movie_schedule { get; set; }
+
+        [ForeignKey("id")]
+        public orders order{ get; set; }
     }
 }

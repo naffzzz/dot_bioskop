@@ -28,7 +28,7 @@ namespace dot_bioskop.Controllers
             return Ok(_ordersData.GetOrders());
         }
 
-        [HttpGet("/apiNew/orderitems/{id}")]
+        [HttpGet("/apiNew/orders/{id}")]
         public IActionResult GetOrderItem(int id)
         {
             var order = _ordersData.GetOrder(id);
