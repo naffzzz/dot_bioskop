@@ -17,6 +17,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using FluentValidation.AspNetCore;
 using System.Reflection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace dot_bioskop
 {
@@ -41,6 +44,25 @@ namespace dot_bioskop
                 fv.ImplicitlyValidateRootCollectionElements = true;
                 fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             });
+
+            var key = "Memang begitulah cinta, deritanya tiada akhir";
+            services.AddAuthentication(x => {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
+            services.AddSingleton<IJwtAuthenticationManager>(new JWTAuthenticationManager(key));
             services.AddScoped<IUsersData, SqlUsersData>();
             services.AddScoped<IMoviesData, SqlMoviesData>();
             services.AddScoped<ITagsData, SqlTagsData>();
@@ -62,6 +84,8 @@ namespace dot_bioskop
             //app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

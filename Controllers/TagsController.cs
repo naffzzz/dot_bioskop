@@ -15,7 +15,6 @@ namespace dot_bioskop.Controllers
     {
         private ITagsData _tagsData;
         private readonly ILogger _logger;
-        private readonly TagsValidation _tagsValidation;
 
         public TagsController(ILogger<TagsController> logger, ITagsData tagsData)
         {

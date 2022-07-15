@@ -15,7 +15,7 @@ namespace dot_bioskop.Interfaces
 
         users SoftDeleteUser(users user);
 
-        users LoginUser (logins login);
+        users LoginUser(logins login);
 
         void DeleteUser(users user);
     }

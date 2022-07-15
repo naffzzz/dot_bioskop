@@ -7,20 +7,24 @@ using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 using System;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 
 namespace dot_bioskop.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
         private IUsersData _usersData;
         private readonly ILogger _logger;
+        private readonly IJwtAuthenticationManager jwtAuthenticationManager;
 
-        public UsersController(ILogger<UsersController> logger, IUsersData usersData)
+        public UsersController(ILogger<UsersController> logger, IUsersData usersData, IJwtAuthenticationManager jwtAuthenticationManager)
         {
             _usersData = usersData;
             _logger = logger;
+            this.jwtAuthenticationManager = jwtAuthenticationManager;
         }
 
         public static bool EmailValidation(string emailAddress)
@@ -43,6 +47,7 @@ namespace dot_bioskop.Controllers
             return new string(chars);
         }
 
+        [Authorize(Roles = "1")]
         [HttpGet("/apiNew/users")]
         public IActionResult GetUsers()
         {
@@ -65,6 +70,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost("/apiNew/login/")]
         public IActionResult LoginUser(logins login)
         {
@@ -72,6 +78,10 @@ namespace dot_bioskop.Controllers
 
             if (existingUser != null)
             {
+                var token = jwtAuthenticationManager.Authenticate(login.email, login.password);
+                if (token == null)
+                    return Unauthorized();
+                return Ok(token);
                 _logger.LogInformation("Log login available user data (" + login + ")");
                 return Ok("Selamat Datang Kembali");
             }
