@@ -65,6 +65,23 @@ namespace dot_bioskop.Controllers
             }
         }
 
+        [HttpPost("/apiNew/login/")]
+        public IActionResult LoginUser(logins login)
+        {
+            var existingUser = _usersData.LoginUser(login);
+
+            if (existingUser != null)
+            {
+                _logger.LogInformation("Log login available user data (" + login + ")");
+                return Ok("Selamat Datang Kembali");
+            }
+            else
+            {
+                _logger.LogInformation("Log login unavailable user data (" + login + ")");
+                return NotFound("Email/Password Salah");
+            }
+        }
+
         [HttpPost("/apiNew/users")]
         public IActionResult AddUser(users user)
         {

@@ -35,7 +35,12 @@ namespace dot_bioskop.Datas
             var user = _myDBContext.users.Find(id);
             return user;
         }
-
+        public users LoginUser(logins login)
+        {
+            var order = _myDBContext.users.Where(b => b.email == login.email).Where(b => b.password == login.password).FirstOrDefault();
+            return order;
+        }
+        
         public List<users> GetUsers()
         {
             return _myDBContext.users.ToList();
