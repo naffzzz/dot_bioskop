@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Authorization;
 using MailKit;
 using MimeKit;
 using MailKit.Net.Smtp;
+using System.Threading;
+using System.Diagnostics;
 
 namespace dot_bioskop.Controllers
 {
@@ -53,7 +55,27 @@ namespace dot_bioskop.Controllers
             }
             return new string(chars);
         }
-        
+
+        protected void SendEmail(string activation_key, string email)
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Test Project", "no-reply@dotbioskop.com"));
+            message.To.Add(new MailboxAddress("pritom", "dotbioskop@gmail.com"));
+            message.Subject = "Kode aktivasi akun DOT Bioskop";
+            message.Body = new TextPart("plain")
+            {
+                Text = "Kode aktivasi kamu adalah " + activation_key,
+            };
+            using (var client = new SmtpClient())
+            {
+                client.Connect("smtp.mailtrap.io", 587, false);
+                client.Authenticate("0753715d51fde8", "1871ec7f3824a5");
+
+                client.Send(message);
+                client.Disconnect(true);
+            }
+        }
+
         [Authorize(Roles = "1")]
         [HttpGet("/apiNew/users")]
         public IActionResult GetUsers()
@@ -170,32 +192,22 @@ namespace dot_bioskop.Controllers
             UsersValidation Obj = new UsersValidation();
             if (EmailValidation(user.email) == true)
             {
+
                 user.created_at = DateTime.Now;
-                user.activation_key = CreateRandomString(12);
+                var activation_key = CreateRandomString(12);
+                user.activation_key = activation_key;
                 user.is_confirmed = 0;
                 ValidationResult Result = Obj.Validate(user);
                 if (Result.IsValid)
                 {
-                    _logger.LogInformation("Log registering user data");
+                    Thread t1 = new Thread(() => SendEmail(activation_key, user.email));
+
+                    t1.Start();
+
+                    _logger.LogInformation("log registering user data");
                     _usersData.AddUser(user);
 
-                    var message = new MimeMessage();
-                    message.From.Add(new MailboxAddress("Test Project", "no-reply@dotbioskop.com"));
-                    message.To.Add(new MailboxAddress("pritom", "dotbioskop@gmail.com"));
-                    message.Subject = "Kode aktivasi akun DOT Bioskop";
-                    message.Body = new TextPart("plain")
-                    {
-                        Text = "Kode aktivasi kamu adalah " + user.activation_key,
-                    };
-                    using (var client = new SmtpClient())
-                    {
-                        client.Connect("smtp.mailtrap.io", 587, false);
-                        client.Authenticate("0753715d51fde8", "1871ec7f3824a5");
-
-                        client.Send(message);
-                        client.Disconnect(true);
-                    }
-                    return Ok("Silakan cek email kamu "+ user.email);
+                    return Ok("Silakan cek email kamu " + user.email);
                 }
                 else
                 {
