@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dot_bioskop.Migrations
 {
-    public partial class DBInit : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -78,6 +78,8 @@ namespace dot_bioskop.Migrations
                     password = table.Column<string>(type: "nvarchar(255)", nullable: false),
                     avatar = table.Column<string>(type: "nvarchar(255)", nullable: false),
                     is_admin = table.Column<int>(type: "bool", nullable: false),
+                    activation_key = table.Column<string>(type: "nvarchar(12)", nullable: false),
+                    is_confirmed = table.Column<int>(type: "bool", nullable: false),
                     created_at = table.Column<DateTime>(type: "datetime", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime", nullable: true),
                     deleted_at = table.Column<DateTime>(type: "datetime", nullable: true)

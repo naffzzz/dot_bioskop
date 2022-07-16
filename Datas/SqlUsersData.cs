@@ -24,6 +24,25 @@ namespace dot_bioskop.Datas
             return user;
         }
 
+        public users ActivationUser1(logins login)
+        {
+            var existingUser = _myDBContext.users.Where(b => b.email == login.email).Where(b => b.password == login.password).Where(b => b.activation_key == login.activation_key).FirstOrDefault();
+            return existingUser;
+        }
+
+        public users ActivationUser2(logins login)
+        {
+            var existingUser = _myDBContext.users.Where(b => b.email == login.email).Where(b => b.password == login.password).Where(b => b.activation_key == login.activation_key).FirstOrDefault();
+            if (existingUser != null)
+            {
+                existingUser.is_confirmed = 1;
+                _myDBContext.users.Update(existingUser);
+                _myDBContext.SaveChanges();
+            }
+
+            return existingUser;
+        }
+
         public void DeleteUser(users user)
         {
             _myDBContext.users.Remove(user);
@@ -37,8 +56,8 @@ namespace dot_bioskop.Datas
         }
         public users LoginUser(logins login)
         {
-            var order = _myDBContext.users.Where(b => b.email == login.email).Where(b => b.password == login.password).FirstOrDefault();
-            return order;
+            var user = _myDBContext.users.Where(b => b.email == login.email).Where(b => b.password == login.password).Where(b => b.is_confirmed == 1).FirstOrDefault();
+            return user;
         }
         
         public List<users> GetUsers()

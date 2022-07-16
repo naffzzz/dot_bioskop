@@ -8,23 +8,30 @@ using System.Text.RegularExpressions;
 using System;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
+using MailKit;
+using MimeKit;
+using MailKit.Net.Smtp;
 
 namespace dot_bioskop.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
         private IUsersData _usersData;
         private readonly ILogger _logger;
-        private readonly IJwtAuthenticationManager jwtAuthenticationManager;
+        //private readonly IJwtAuthenticationManager jwtAuthenticationManager;
+        private readonly ICustomAuthenticationManager customAuthenticationManager;
 
-        public UsersController(ILogger<UsersController> logger, IUsersData usersData, IJwtAuthenticationManager jwtAuthenticationManager)
+        public UsersController(ILogger<UsersController> logger, IUsersData usersData, 
+            //IJwtAuthenticationManager jwtAuthenticationManager,
+            ICustomAuthenticationManager customAuthenticationManager
+            )
         {
             _usersData = usersData;
             _logger = logger;
-            this.jwtAuthenticationManager = jwtAuthenticationManager;
+            //this.jwtAuthenticationManager = jwtAuthenticationManager;
+            this.customAuthenticationManager = customAuthenticationManager;
         }
 
         public static bool EmailValidation(string emailAddress)
@@ -34,7 +41,7 @@ namespace dot_bioskop.Controllers
             return isValid;
         }
 
-        public static string CreateRandomPassword(int PasswordLength)
+        public static string CreateRandomString(int PasswordLength)
         {
             string _allowedChars = "0123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ";
             Random randNum = new Random();
@@ -46,7 +53,7 @@ namespace dot_bioskop.Controllers
             }
             return new string(chars);
         }
-
+        
         [Authorize(Roles = "1")]
         [HttpGet("/apiNew/users")]
         public IActionResult GetUsers()
@@ -55,6 +62,7 @@ namespace dot_bioskop.Controllers
             return Ok(_usersData.GetUsers());
         }
 
+        [AllowAnonymous]
         [HttpGet("/apiNew/users/{id}")]
         public IActionResult GetUser(int id)
         {
@@ -71,19 +79,20 @@ namespace dot_bioskop.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("/apiNew/login/")]
+        [HttpPost("/api/login/")]
         public IActionResult LoginUser(logins login)
         {
             var existingUser = _usersData.LoginUser(login);
 
             if (existingUser != null)
             {
-                var token = jwtAuthenticationManager.Authenticate(login.email, login.password);
+                //var token = jwtAuthenticationManager.Authenticate(login.email, login.password, existingUser.is_admin.ToString());
+                string is_admin = existingUser.is_admin.ToString();
+                var token = customAuthenticationManager.Authenticate(login.email, is_admin);
                 if (token == null)
                     return Unauthorized();
-                return Ok(token);
                 _logger.LogInformation("Log login available user data (" + login + ")");
-                return Ok("Selamat Datang Kembali");
+                return Ok(token);
             }
             else
             {
@@ -92,6 +101,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
+        [Authorize(Roles = "1")]
         [HttpPost("/apiNew/users")]
         public IActionResult AddUser(users user)
         {
@@ -99,26 +109,97 @@ namespace dot_bioskop.Controllers
             if (EmailValidation(user.email) == true)
             {
                 user.created_at = DateTime.Now;
-                if (user.password == null)
+                user.activation_key = CreateRandomString(12);
+                _logger.LogInformation("Log adding user data");
+                _usersData.AddUser(user);
+
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress("Test Project", "no-reply@dotbioskop.com"));
+                message.To.Add(new MailboxAddress("pritom", "dotbioskop@gmail.com"));
+                message.Subject = "Kode aktivasi akun DOT Bioskop";
+                message.Body = new TextPart("plain")
                 {
-                    user.password = CreateRandomPassword(8);
-                    ValidationResult Result = Obj.Validate(user);
-                    if (Result.IsValid)
+                    Text = "Kode aktivasi kamu adalah " + user.activation_key,
+                };
+                using (var client = new SmtpClient())
                     {
-                        _logger.LogInformation("Log adding user data");
-                        _usersData.AddUser(user);
-                        return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + user.id, user);
-                    }
-                    else
-                    {
-                        return BadRequest(Result);
-                    }
+                    client.Connect("smtp.mailtrap.io", 587, false);
+                    client.Authenticate("0753715d51fde8", "1871ec7f3824a5");
+
+                    client.Send(message);
+                    client.Disconnect(true);
+                }
+                return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + user.id, user);
+
+            }
+            else
+            {
+                return NotFound("Email tidak valid");
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("/api/activationuser")]
+        public IActionResult ActivationUser(logins user)
+        {
+            UsersValidation Obj = new UsersValidation();
+            if (EmailValidation(user.email) == true)
+            {
+                _logger.LogInformation("Log activating user data ("+ user.email +")");
+                var result = _usersData.ActivationUser1(user);
+                if (result != null)
+                {
+                    _usersData.ActivationUser2(user);
+                    return Ok("Akun sudah teraktivasi");
                 }
                 else
                 {
-                    _logger.LogInformation("Log adding user data");
+                    return Ok("Email/Password/Kode aktivasi salah");
+                }
+            }
+            else
+            {
+                return BadRequest("Email tidak valid");
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("/api/users")]
+        public IActionResult RegisterUser(users user)
+        {
+            UsersValidation Obj = new UsersValidation();
+            if (EmailValidation(user.email) == true)
+            {
+                user.created_at = DateTime.Now;
+                user.activation_key = CreateRandomString(12);
+                user.is_confirmed = 0;
+                ValidationResult Result = Obj.Validate(user);
+                if (Result.IsValid)
+                {
+                    _logger.LogInformation("Log registering user data");
                     _usersData.AddUser(user);
-                    return Created(HttpContext.Request.Scheme + "://" + HttpContext.Request.Host + HttpContext.Request.Path + "/" + user.id, user);
+
+                    var message = new MimeMessage();
+                    message.From.Add(new MailboxAddress("Test Project", "no-reply@dotbioskop.com"));
+                    message.To.Add(new MailboxAddress("pritom", "dotbioskop@gmail.com"));
+                    message.Subject = "Kode aktivasi akun DOT Bioskop";
+                    message.Body = new TextPart("plain")
+                    {
+                        Text = "Kode aktivasi kamu adalah " + user.activation_key,
+                    };
+                    using (var client = new SmtpClient())
+                    {
+                        client.Connect("smtp.mailtrap.io", 587, false);
+                        client.Authenticate("0753715d51fde8", "1871ec7f3824a5");
+
+                        client.Send(message);
+                        client.Disconnect(true);
+                    }
+                    return Ok("Silakan cek email kamu "+ user.email);
+                }
+                else
+                {
+                    return BadRequest(Result);
                 }
             }
             else
@@ -127,6 +208,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
+        [Authorize(Roles = "1")]
         [HttpDelete("/apiNew/users/{id}")]
         public IActionResult DeleteUser(int id)
         {
@@ -146,6 +228,7 @@ namespace dot_bioskop.Controllers
 
         }
 
+        [Authorize(Roles = "1")]
         [HttpPatch("/api/users/{id}")]
         public IActionResult SoftDeleteUser(int id, users user)
         {
@@ -166,6 +249,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
+        [Authorize(Roles = "1")]
         [HttpPatch("/apiNew/users/{id}")]
         public IActionResult UpdateUser(int id, users user)
         {

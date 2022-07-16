@@ -17,6 +17,10 @@ namespace dot_bioskop.Interfaces
 
         users LoginUser(logins login);
 
+        users ActivationUser1(logins login);
+
+        users ActivationUser2(logins login);
+
         void DeleteUser(users user);
     }
 }

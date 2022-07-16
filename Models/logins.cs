@@ -9,6 +9,8 @@ namespace dot_bioskop.Models
     {
         public string email { get; set; }
         public string password { get; set; }
+        public int is_admin { get; set; }
+        public string activation_key { get; set; }
 
     }
 }

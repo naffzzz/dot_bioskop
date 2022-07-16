@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 
 namespace dot_bioskop.Controllers
 {
@@ -22,7 +23,7 @@ namespace dot_bioskop.Controllers
             _logger = logger;
         }
 
-
+        [Authorize(Roles = "1, 2")]
         [HttpGet("/apiNew/orders")]
         public IActionResult GetOrders()
         {
@@ -30,6 +31,7 @@ namespace dot_bioskop.Controllers
             return Ok(_ordersData.GetOrders());
         }
 
+        [Authorize(Roles = "1, 2")]
         [HttpGet("/apiNew/orders/{id}")]
         public IActionResult GetOrderItem(int id)
         {
@@ -46,6 +48,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
+        [Authorize(Roles = "1, 2")]
         [HttpPost("/apiNew/orders")]
         public IActionResult AddOrderItem(orders order)
         {
@@ -64,6 +67,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
+        [Authorize(Roles = "1, 2")]
         [HttpDelete("/apiNew/orders/{id}")]
         public IActionResult DeleteOrderItem(int id)
         {
@@ -82,6 +86,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
+        [Authorize(Roles = "1, 2")]
         [HttpPatch("/api/orders/{id}")]
         public IActionResult SoftDeleteOrderItem(int id, orders order)
         {
@@ -102,6 +107,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
+        [Authorize(Roles = "1, 2")]
         [HttpPatch("/apiNew/orders/{id}")]
         public IActionResult UpdateOrderItem(int id, orders order)
         {

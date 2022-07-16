@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using dot_bioskop.DBContexts;
 using dot_bioskop.Interfaces;
+using dot_bioskop.Models;
 using dot_bioskop.Datas;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
@@ -37,7 +38,6 @@ namespace dot_bioskop
         {
             string mySqlConnectionStr = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContextPool<MyDBContext>(options => options.UseMySql(mySqlConnectionStr, ServerVersion.AutoDetect(mySqlConnectionStr)));
-
             services.AddControllers().AddFluentValidation(fv =>
             {
                 fv.ImplicitlyValidateChildProperties = true;
@@ -46,23 +46,28 @@ namespace dot_bioskop
             });
 
             var key = "Memang begitulah cinta, deritanya tiada akhir";
-            services.AddAuthentication(x => {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-            });
 
-            services.AddSingleton<IJwtAuthenticationManager>(new JWTAuthenticationManager(key));
+            services.AddAuthentication("Basic").AddScheme<BasicAuthenticationOptions, CustomAuthenticationHandler>("Basic", null);
+
+            //services.AddAuthentication(x =>
+            //{
+            //    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //}).AddJwtBearer(x =>
+            //{
+            //    x.RequireHttpsMetadata = false;
+            //    x.SaveToken = true;
+            //    x.TokenValidationParameters = new TokenValidationParameters
+            //    {
+            //        ValidateIssuerSigningKey = true,
+            //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key)),
+            //        ValidateIssuer = false,
+            //        ValidateAudience = false
+            //    };
+            //});
+
+            services.AddSingleton<ICustomAuthenticationManager, CustomAuthenticationManager>();
+            //services.AddSingleton<IJwtAuthenticationManager>(new JWTAuthenticationManager(key));
             services.AddScoped<IUsersData, SqlUsersData>();
             services.AddScoped<IMoviesData, SqlMoviesData>();
             services.AddScoped<ITagsData, SqlTagsData>();

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 
 namespace dot_bioskop.Controllers
 {
@@ -22,7 +23,7 @@ namespace dot_bioskop.Controllers
             _logger = logger;
         }
 
-
+        [AllowAnonymous]
         [HttpGet("/apiNew/tags")]
         public IActionResult GetTags()
         {
@@ -30,6 +31,7 @@ namespace dot_bioskop.Controllers
             return Ok(_tagsData.GetTags());
         }
 
+        [AllowAnonymous]
         [HttpGet("/apiNew/tags/{id}")]
         public IActionResult GetTag(int id)
         {
@@ -46,6 +48,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
+        [Authorize(Roles = "1")]
         [HttpPost("/apiNew/tags")]
         public IActionResult AddTag(tags tag)
         {
@@ -64,6 +67,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
+        [Authorize(Roles = "1")]
         [HttpDelete("/apiNew/tags/{id}")]
         public IActionResult DeleteTag(int id)
         {
@@ -82,6 +86,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
+        [Authorize(Roles = "1")]
         [HttpPatch("/api/tags/{id}")]
         public IActionResult SoftDeleteTag(int id, tags tag)
         {
@@ -102,6 +107,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
+        [Authorize(Roles = "1")]
         [HttpPatch("/apiNew/tags/{id}")]
         public IActionResult UpdateTag(int id, tags tag)
         {

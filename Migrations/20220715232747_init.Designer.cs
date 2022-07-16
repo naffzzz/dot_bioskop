@@ -10,8 +10,8 @@ using dot_bioskop.DBContexts;
 namespace dot_bioskop.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20220715031913_DBInit")]
-    partial class DBInit
+    [Migration("20220715232747_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -285,6 +285,10 @@ namespace dot_bioskop.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("activation_key")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(12)");
+
                     b.Property<string>("avatar")
                         .IsRequired()
                         .HasColumnType("nvarchar(255)");
@@ -300,6 +304,9 @@ namespace dot_bioskop.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<int>("is_admin")
+                        .HasColumnType("bool");
+
+                    b.Property<int>("is_confirmed")
                         .HasColumnType("bool");
 
                     b.Property<string>("name")

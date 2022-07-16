@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 
 namespace dot_bioskop.Controllers
 {
@@ -22,7 +23,7 @@ namespace dot_bioskop.Controllers
             _logger = logger;
         }
 
-
+        [AllowAnonymous]
         [HttpGet("/apiNew/movieschedules")]
         public IActionResult GetMovieSchedules()
         {
@@ -30,6 +31,7 @@ namespace dot_bioskop.Controllers
             return Ok(_movieSchedulesData.GetMovieSchedules());
         }
 
+        [AllowAnonymous]
         [HttpGet("/apiNew/movieschedules/{id}")]
         public IActionResult GetMovieSchedule(int id)
         {
@@ -46,6 +48,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
+        [Authorize(Roles = "1")]
         [HttpPost("/apiNew/movieschedules")]
         public IActionResult AddMovieSchedule(movie_schedules movie_schedule)
         {
@@ -64,6 +67,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
+        [Authorize(Roles = "1")]
         [HttpDelete("/apiNew/movieschedules/{id}")]
         public IActionResult DeleteMovieSchedule(int id)
         {
@@ -82,6 +86,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
+        [Authorize(Roles = "1")]
         [HttpPatch("/api/movieschedules/{id}")]
         public IActionResult SoftDeleteMovieSchedule(int id)
         {
@@ -101,6 +106,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
+        [Authorize(Roles = "1")]
         [HttpPatch("/apiNew/movieschedules/{id}")]
         public IActionResult UpdateMovieSchedules(int id, movie_schedules movie_schedule)
         {

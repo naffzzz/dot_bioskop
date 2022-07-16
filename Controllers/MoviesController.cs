@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Authorization;
 
 namespace dot_bioskop.Controllers
 {
@@ -22,7 +23,7 @@ namespace dot_bioskop.Controllers
             _logger = logger;
         }
 
-
+        [AllowAnonymous]
         [HttpGet("/apiNew/movies")]
         public IActionResult GetMovies()
         {
@@ -30,6 +31,7 @@ namespace dot_bioskop.Controllers
             return Ok(_moviesData.GetMovies());
         }
 
+        [AllowAnonymous]
         [HttpGet("/apiNew/movies/{id}")]
         public IActionResult GetMovie(int id)
         {
@@ -46,6 +48,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
+        [Authorize(Roles = "1")]
         [HttpPost("/apiNew/movies")]
         public IActionResult AddMovie(movies movie)
         {
@@ -64,6 +67,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
+        [Authorize(Roles = "1")]
         [HttpDelete("/apiNew/movies/{id}")]
         public IActionResult DeleteMovie(int id)
         {
@@ -82,6 +86,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
+        [Authorize(Roles = "1")]
         [HttpPatch("/api/movies/{id}")]
         public IActionResult SoftDeleteMovie(int id, movies movie)
         {
@@ -102,6 +107,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
+        [Authorize(Roles = "1")]
         [HttpPatch("/apiNew/movies/{id}")]
         public IActionResult UpdateMovie(int id, movies movie)
         {
