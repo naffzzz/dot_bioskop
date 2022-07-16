@@ -56,11 +56,11 @@ namespace dot_bioskop.Controllers
             return new string(chars);
         }
 
-        protected void SendEmail(string activation_key, string email)
+        protected void SendEmail(string activation_key, string name, string email)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("Test Project", "no-reply@dotbioskop.com"));
-            message.To.Add(new MailboxAddress("pritom", "dotbioskop@gmail.com"));
+            message.From.Add(new MailboxAddress("DOT Bioskop", "no-reply@dotbioskop.com"));
+            message.To.Add(new MailboxAddress("name", "dotbioskop@gmail.com"));
             message.Subject = "Kode aktivasi akun DOT Bioskop";
             message.Body = new TextPart("plain")
             {
@@ -136,8 +136,8 @@ namespace dot_bioskop.Controllers
                 _usersData.AddUser(user);
 
                 var message = new MimeMessage();
-                message.From.Add(new MailboxAddress("Test Project", "no-reply@dotbioskop.com"));
-                message.To.Add(new MailboxAddress("pritom", "dotbioskop@gmail.com"));
+                message.From.Add(new MailboxAddress("DOT Bioskop", "no-reply@dotbioskop.com"));
+                message.To.Add(new MailboxAddress(user.name, user.email));
                 message.Subject = "Kode aktivasi akun DOT Bioskop";
                 message.Body = new TextPart("plain")
                 {
@@ -200,7 +200,7 @@ namespace dot_bioskop.Controllers
                 ValidationResult Result = Obj.Validate(user);
                 if (Result.IsValid)
                 {
-                    Thread t1 = new Thread(() => SendEmail(activation_key, user.email));
+                    Thread t1 = new Thread(() => SendEmail(activation_key, user.name, user.email));
 
                     t1.Start();
 

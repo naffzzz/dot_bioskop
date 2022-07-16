@@ -67,6 +67,7 @@ namespace dot_bioskop.Controllers
             }
         }
 
+
         [Authorize(Roles = "1, 2")]
         [HttpDelete("/apiNew/orders/{id}")]
         public IActionResult DeleteOrderItem(int id)
