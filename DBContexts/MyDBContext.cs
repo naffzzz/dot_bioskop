@@ -55,7 +55,7 @@ namespace dot_bioskop.DBContexts
             modelBuilder.Entity<users>().Property(u => u.email).HasColumnType("nvarchar(255)").IsRequired();
             modelBuilder.Entity<users>().Property(u => u.password).HasColumnType("nvarchar(255)").IsRequired();
             modelBuilder.Entity<users>().Property(u => u.avatar).HasColumnType("nvarchar(255)").IsRequired();
-            modelBuilder.Entity<users>().Property(u => u.is_admin).HasColumnType("bool").IsRequired();
+            modelBuilder.Entity<users>().Property(u => u.is_admin).HasColumnType("int").IsRequired();
             modelBuilder.Entity<users>().Property(u => u.activation_key).HasColumnType("nvarchar(12)").IsRequired();
             modelBuilder.Entity<users>().Property(u => u.is_confirmed).HasColumnType("bool").IsRequired();
             modelBuilder.Entity<users>().Property(u => u.created_at).HasColumnType("datetime").IsRequired();

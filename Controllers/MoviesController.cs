@@ -88,16 +88,15 @@ namespace dot_bioskop.Controllers
 
         [Authorize(Roles = "1")]
         [HttpPatch("/api/movies/{id}")]
-        public IActionResult SoftDeleteMovie(int id, movies movie)
+        public IActionResult SoftDeleteMovie(int id)
         {
             var existingMovie = _moviesData.GetMovie(id);
 
             if (existingMovie != null)
             {
-                movie.deleted_at = DateTime.Now;
+                existingMovie.deleted_at = DateTime.Now;
                 _logger.LogInformation("Log soft deleting available specified movies data (" + id + ")");
-                movie.id = existingMovie.id;
-                _moviesData.SoftDeleteMovie(movie);
+                _moviesData.SoftDeleteMovie(existingMovie);
                 return Ok("Movie berhasil dihapus");
             }
             else

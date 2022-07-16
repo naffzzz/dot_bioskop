@@ -88,16 +88,15 @@ namespace dot_bioskop.Controllers
 
         [Authorize(Roles = "1")]
         [HttpPatch("/api/studios/{id}")]
-        public IActionResult SoftDeleteStudio(int id, studios studio)
+        public IActionResult SoftDeleteStudio(int id)
         {
             var existingStudio = _studiosData.GetStudio(id);
 
             if (existingStudio != null)
             {
-                studio.deleted_at = DateTime.Now;
+                existingStudio.deleted_at = DateTime.Now;
                 _logger.LogInformation("Log soft deleting available specified studios data (" + id + ")");
-                studio.id = existingStudio.id;
-                _studiosData.SoftDeleteStudio(studio);
+                _studiosData.SoftDeleteStudio(existingStudio);
                 return Ok("Studio berhasil dihapus");
             }
             else

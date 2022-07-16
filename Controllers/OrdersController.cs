@@ -89,16 +89,15 @@ namespace dot_bioskop.Controllers
 
         [Authorize(Roles = "1, 2")]
         [HttpPatch("/api/orders/{id}")]
-        public IActionResult SoftDeleteOrderItem(int id, orders order)
+        public IActionResult SoftDeleteOrderItem(int id)
         {
             var existingOder = _ordersData.GetOrder(id);
 
             if (existingOder != null)
             {
-                order.deleted_at = DateTime.Now;
+                existingOder.deleted_at = DateTime.Now;
                 _logger.LogInformation("Log soft deleting available specified orders data (" + id + ")");
-                order.id = existingOder.id;
-                _ordersData.SoftDeleteOrder(order);
+                _ordersData.SoftDeleteOrder(existingOder);
                 return Ok("Order berhasil dihapus");
             }
             else

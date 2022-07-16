@@ -87,16 +87,15 @@ namespace dot_bioskop.Controllers
 
         [Authorize(Roles = "1")]
         [HttpPatch("/api/movietags/{id}")]
-        public IActionResult SoftDeleteMovieTag(int id, movie_tags movie_tag)
+        public IActionResult SoftDeleteMovieTag(int id)
         {
             var existingMovieTag = _movieTagsData.GetMovieTag(id);
 
             if (existingMovieTag != null)
             {
-                movie_tag.deleted_at = DateTime.Now;
+                existingMovieTag.deleted_at = DateTime.Now;
                 _logger.LogInformation("Log soft deleting available specified movie tags data (" + id + ")");
-                movie_tag.id = existingMovieTag.id;
-                _movieTagsData.SoftDeleteMovieTag(movie_tag);
+                _movieTagsData.SoftDeleteMovieTag(existingMovieTag);
                 return Ok("Tag Movie berhasil dihapus");
             }
             else

@@ -242,16 +242,15 @@ namespace dot_bioskop.Controllers
 
         [Authorize(Roles = "1")]
         [HttpPatch("/api/users/{id}")]
-        public IActionResult SoftDeleteUser(int id, users user)
+        public IActionResult SoftDeleteUser(int id)
         {
             var existingUser = _usersData.GetUser(id);
 
             if (existingUser != null)
             {
-                user.deleted_at = DateTime.Now;
+                existingUser.deleted_at = DateTime.Now;
                 _logger.LogInformation("Log deleting available user data ("+id+")");
-                user.id = existingUser.id;
-                _usersData.SoftDeleteUser(user);
+                _usersData.SoftDeleteUser(existingUser);
                 return Ok("User berhasil dihapus");
             }
             else

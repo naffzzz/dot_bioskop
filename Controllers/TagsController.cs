@@ -88,17 +88,16 @@ namespace dot_bioskop.Controllers
 
         [Authorize(Roles = "1")]
         [HttpPatch("/api/tags/{id}")]
-        public IActionResult SoftDeleteTag(int id, tags tag)
+        public IActionResult SoftDeleteTag(int id)
         {
             var existingTag = _tagsData.GetTag(id);
 
             if (existingTag != null)
             {
-                tag.deleted_at = DateTime.Now;
+                existingTag.deleted_at = DateTime.Now;
                 _logger.LogInformation("Log soft deleting available specified tags data (" + id + ")");
-                tag.id = existingTag.id;
-                _tagsData.SoftDeleteTag(tag);
-                return Ok("Tag berhasil dihapus");
+                _tagsData.SoftDeleteTag(existingTag);
+                return Ok("Tag berhasil diperbarui");
             }
             else
             {
