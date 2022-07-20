@@ -31,18 +31,18 @@ namespace dot_bioskop.Datas
 
         public orders GetOrder(int id)
         {
-            var order = _myDBContext.orders.Where(b => b.id == id).Include("user").FirstOrDefault();
+            var order = _myDBContext.orders.Where(b => b.id == id).Include(x => x.user).FirstOrDefault();
             return order;
         }
 
         public List<orders> GetOrders()
         {
-            return _myDBContext.orders.Include("user").ToList();
+            return _myDBContext.orders.Include(x => x.user).ToList();
         }
 
         public orders SoftDeleteOrder(orders order)
         {
-            var existingOrder = _myDBContext.orders.Find(order.id);
+            var existingOrder = _myDBContext.orders.Where(b => b.id == order.id).FirstOrDefault();
             if (existingOrder != null)
             {
                 existingOrder.deleted_at = order.deleted_at;
@@ -54,8 +54,8 @@ namespace dot_bioskop.Datas
 
         public orders UpdateOrder(orders order)
         {
-            var existingOrder = _myDBContext.orders.Find(order.id);
-            if(existingOrder != null)
+            var existingOrder = _myDBContext.orders.Where(b => b.id == order.id).FirstOrDefault();
+            if (existingOrder != null)
             {
                 existingOrder.user_id = order.user_id;
                 existingOrder.payment_method = order.payment_method;

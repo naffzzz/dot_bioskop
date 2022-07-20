@@ -30,7 +30,7 @@ namespace dot_bioskop.Datas
 
         public studios GetStudio(int id)
         {
-            var studio = _myDBContext.studios.Find(id);
+            var studio = _myDBContext.studios.Where(b => b.id == id).FirstOrDefault();
             return studio;
         }
 
@@ -41,7 +41,7 @@ namespace dot_bioskop.Datas
 
         public studios SoftDeleteStudio(studios studio)
         {
-            var existingStudio = _myDBContext.studios.Find(studio.id);
+            var existingStudio = _myDBContext.studios.Where(b => b.id == studio.id).FirstOrDefault();
             if (existingStudio != null)
             {
                 existingStudio.deleted_at = studio.deleted_at;
@@ -53,8 +53,8 @@ namespace dot_bioskop.Datas
 
         public studios UpdateStudio(studios studio)
         {
-            var existingStudio = _myDBContext.studios.Find(studio.id);
-            if(existingStudio != null)
+            var existingStudio = _myDBContext.studios.Where(b => b.id == studio.id).FirstOrDefault();
+            if (existingStudio != null)
             {
                 existingStudio.studio_number = studio.studio_number;
                 existingStudio.seat_capacity = studio.seat_capacity;

@@ -2,7 +2,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using dot_bioskop.DBContexts;
@@ -10,8 +9,8 @@ using dot_bioskop.DBContexts;
 namespace dot_bioskop.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20220715232747_init")]
-    partial class init
+    [Migration("20220720052551_CreateMovieTagsTable")]
+    partial class CreateMovieTagsTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,45 +22,48 @@ namespace dot_bioskop.Migrations
             modelBuilder.Entity("dot_bioskop.Models.movie_schedules", b =>
                 {
                     b.Property<long>("id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("id");
 
                     b.Property<DateTime>("created_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at");
 
                     b.Property<DateTime>("date")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("date");
 
                     b.Property<DateTime?>("deleted_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("deleted_at");
 
                     b.Property<string>("end_time")
                         .IsRequired()
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("end_time");
 
                     b.Property<long>("movie_id")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("movie_id");
 
                     b.Property<double>("price")
-                        .HasColumnType("double");
+                        .HasColumnType("double")
+                        .HasColumnName("price");
 
                     b.Property<string>("start_time")
                         .IsRequired()
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("start_time");
 
                     b.Property<long>("studio_id")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("studio_id");
 
                     b.Property<DateTime?>("updated_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at");
 
-                    b.HasKey("id")
-                        .HasName("PK_movie_schedules");
-
-                    b.HasIndex("movie_id");
-
-                    b.HasIndex("studio_id");
+                    b.HasKey("id");
 
                     b.ToTable("movie_schedules");
                 });
@@ -69,31 +71,30 @@ namespace dot_bioskop.Migrations
             modelBuilder.Entity("dot_bioskop.Models.movie_tags", b =>
                 {
                     b.Property<long>("id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("id");
 
                     b.Property<DateTime>("created_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at");
 
                     b.Property<DateTime?>("deleted_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("deleted_at");
 
                     b.Property<long>("movie_id")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("movie_id");
 
                     b.Property<long>("tag_id")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("tag_id");
 
                     b.Property<DateTime?>("updated_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at");
 
-                    b.HasKey("id")
-                        .HasName("PK_movie_tags");
-
-                    b.HasIndex("movie_id");
-
-                    b.HasIndex("tag_id");
+                    b.HasKey("id");
 
                     b.ToTable("movie_tags");
                 });
@@ -103,34 +104,40 @@ namespace dot_bioskop.Migrations
                     b.Property<long>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("id");
 
                     b.Property<DateTime>("created_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at");
 
                     b.Property<DateTime?>("deleted_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("deleted_at");
 
                     b.Property<string>("overview")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("overview");
 
                     b.Property<DateTime>("play_until")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("play_until");
 
                     b.Property<string>("poster")
                         .IsRequired()
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("poster");
 
                     b.Property<string>("title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("title");
 
                     b.Property<DateTime?>("updated_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at");
 
-                    b.HasKey("id")
-                        .HasName("PK_movies");
+                    b.HasKey("id");
 
                     b.ToTable("movies");
                 });
@@ -138,40 +145,42 @@ namespace dot_bioskop.Migrations
             modelBuilder.Entity("dot_bioskop.Models.order_items", b =>
                 {
                     b.Property<long>("id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("id");
 
                     b.Property<DateTime>("created_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at");
 
                     b.Property<DateTime?>("deleted_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("deleted_at");
 
                     b.Property<long>("movie_schedule_id")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("movie_schedule_id");
 
                     b.Property<long>("order_id")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("order_id");
 
                     b.Property<double>("price")
-                        .HasColumnType("double");
+                        .HasColumnType("double")
+                        .HasColumnName("price");
 
                     b.Property<int>("qty")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("qty");
 
                     b.Property<double>("sub_total_price")
-                        .HasColumnType("double");
+                        .HasColumnType("double")
+                        .HasColumnName("sub_total_price");
 
                     b.Property<DateTime?>("updated_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at");
 
-                    b.HasKey("id")
-                        .HasName("PK_order_items");
-
-                    b.HasIndex("movie_schedule_id");
-
-                    b.HasIndex("order_id");
+                    b.HasKey("id");
 
                     b.ToTable("order_items");
                 });
@@ -179,33 +188,34 @@ namespace dot_bioskop.Migrations
             modelBuilder.Entity("dot_bioskop.Models.orders", b =>
                 {
                     b.Property<long>("id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("id");
 
                     b.Property<DateTime>("created_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at");
 
                     b.Property<DateTime?>("deleted_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("deleted_at");
 
-                    b.Property<string>("payment_method")
-                        .IsRequired()
-                        .HasColumnType("enum('0','1')");
+                    b.Property<int>("payment_method")
+                        .HasColumnType("int")
+                        .HasColumnName("payment_method");
 
                     b.Property<double>("total_item_price")
-                        .HasColumnType("double");
+                        .HasColumnType("double")
+                        .HasColumnName("total_item_price");
 
                     b.Property<DateTime?>("updated_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at");
 
                     b.Property<long>("user_id")
-                        .HasColumnType("bigint");
+                        .HasColumnType("bigint")
+                        .HasColumnName("user_id");
 
-                    b.HasKey("id")
-                        .HasName("PK_orders");
-
-                    b.HasIndex("user_id");
+                    b.HasKey("id");
 
                     b.ToTable("orders");
                 });
@@ -215,25 +225,29 @@ namespace dot_bioskop.Migrations
                     b.Property<long>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("id");
 
                     b.Property<DateTime>("created_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at");
 
                     b.Property<DateTime?>("deleted_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("deleted_at");
 
-                    b.Property<int>("seat_capacity")
-                        .HasColumnType("int");
+                    b.Property<long>("seat_capacity")
+                        .HasColumnType("bigint")
+                        .HasColumnName("seat_capacity");
 
-                    b.Property<int>("studio_number")
-                        .HasColumnType("int");
+                    b.Property<long>("studio_number")
+                        .HasColumnType("bigint")
+                        .HasColumnName("studio_number");
 
                     b.Property<DateTime?>("updated_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at");
 
-                    b.HasKey("id")
-                        .HasName("PK_studios");
+                    b.HasKey("id");
 
                     b.ToTable("studios");
                 });
@@ -243,39 +257,28 @@ namespace dot_bioskop.Migrations
                     b.Property<long>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("id");
 
                     b.Property<DateTime>("created_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at");
 
                     b.Property<DateTime?>("deleted_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("deleted_at");
 
                     b.Property<string>("name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("name");
 
                     b.Property<DateTime?>("updated_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at");
 
-                    b.HasKey("id")
-                        .HasName("PK_tags");
+                    b.HasKey("id");
 
                     b.ToTable("tags");
-
-                    b.HasData(
-                        new
-                        {
-                            id = 1L,
-                            created_at = new DateTime(2022, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            name = "Horror"
-                        },
-                        new
-                        {
-                            id = 2L,
-                            created_at = new DateTime(2022, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            name = "Comedy"
-                        });
                 });
 
             modelBuilder.Entity("dot_bioskop.Models.users", b =>
@@ -283,45 +286,54 @@ namespace dot_bioskop.Migrations
                     b.Property<long>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bigint")
-                        .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("id");
 
                     b.Property<string>("activation_key")
                         .IsRequired()
-                        .HasColumnType("nvarchar(12)");
+                        .HasColumnType("varchar(12)")
+                        .HasColumnName("activation_key");
 
                     b.Property<string>("avatar")
                         .IsRequired()
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("avatar");
 
                     b.Property<DateTime>("created_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at");
 
                     b.Property<DateTime?>("deleted_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("deleted_at");
 
                     b.Property<string>("email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("email");
 
                     b.Property<int>("is_admin")
-                        .HasColumnType("bool");
+                        .HasColumnType("int")
+                        .HasColumnName("is_admin");
 
                     b.Property<int>("is_confirmed")
-                        .HasColumnType("bool");
+                        .HasColumnType("bool")
+                        .HasColumnName("is_confirmed");
 
                     b.Property<string>("name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("name");
 
                     b.Property<string>("password")
                         .IsRequired()
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("password");
 
                     b.Property<DateTime?>("updated_at")
-                        .HasColumnType("datetime");
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at");
 
-                    b.HasKey("id")
-                        .HasName("PK_users");
+                    b.HasKey("id");
 
                     b.ToTable("users");
                 });
@@ -338,20 +350,6 @@ namespace dot_bioskop.Migrations
                         .WithMany()
                         .HasForeignKey("id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("dot_bioskop.Models.movies", null)
-                        .WithMany()
-                        .HasForeignKey("movie_id")
-                        .HasConstraintName("FK_movie_schedules_movies")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("dot_bioskop.Models.studios", null)
-                        .WithMany()
-                        .HasForeignKey("studio_id")
-                        .HasConstraintName("FK_movie_schedules_studios")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("movie");
@@ -373,20 +371,6 @@ namespace dot_bioskop.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("dot_bioskop.Models.movies", null)
-                        .WithMany()
-                        .HasForeignKey("movie_id")
-                        .HasConstraintName("FK_movie_tags_movies")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("dot_bioskop.Models.tags", null)
-                        .WithMany()
-                        .HasForeignKey("tag_id")
-                        .HasConstraintName("FK_movie_tags_tags")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.Navigation("movie");
 
                     b.Navigation("tag");
@@ -406,20 +390,6 @@ namespace dot_bioskop.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("dot_bioskop.Models.movie_schedules", null)
-                        .WithMany()
-                        .HasForeignKey("movie_schedule_id")
-                        .HasConstraintName("FK_order_items_movie_schedules")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("dot_bioskop.Models.orders", null)
-                        .WithMany()
-                        .HasForeignKey("order_id")
-                        .HasConstraintName("FK_order_items_orders")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.Navigation("movie_schedule");
 
                     b.Navigation("order");
@@ -431,13 +401,6 @@ namespace dot_bioskop.Migrations
                         .WithMany()
                         .HasForeignKey("id")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("dot_bioskop.Models.users", null)
-                        .WithMany()
-                        .HasForeignKey("user_id")
-                        .HasConstraintName("FK_orders_users")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("user");

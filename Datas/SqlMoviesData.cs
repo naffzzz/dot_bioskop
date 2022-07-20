@@ -30,7 +30,7 @@ namespace dot_bioskop.Datas
 
         public movies GetMovie(int id)
         {
-            var movie = _myDBContext.movies.Find(id);
+            var movie = _myDBContext.movies.Where(b => b.id == id).FirstOrDefault();
             return movie;
         }
 
@@ -40,7 +40,7 @@ namespace dot_bioskop.Datas
         }
         public movies SoftDeleteMovie(movies movie)
         {
-            var existingMovie = _myDBContext.movies.Find(movie.id);
+            var existingMovie = _myDBContext.movies.Where(b => b.id == movie.id).FirstOrDefault();
             if (existingMovie != null)
             {
                 existingMovie.deleted_at = movie.deleted_at;
@@ -52,8 +52,8 @@ namespace dot_bioskop.Datas
 
         public movies UpdateMovie(movies movie)
         {
-            var existingMovie = _myDBContext.movies.Find(movie.id);
-            if(existingMovie != null)
+            var existingMovie = _myDBContext.movies.Where(b => b.id == movie.id).FirstOrDefault();
+            if (existingMovie != null)
             {
                 existingMovie.title = movie.title;
                 existingMovie.overview = movie.overview;

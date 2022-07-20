@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using dot_bioskop.DBContexts;
 
 namespace dot_bioskop.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    partial class MyDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220720052459_CreateMovieSchedulesTable")]
+    partial class CreateMovieSchedulesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,37 +68,6 @@ namespace dot_bioskop.Migrations
                     b.ToTable("movie_schedules");
                 });
 
-            modelBuilder.Entity("dot_bioskop.Models.movie_tags", b =>
-                {
-                    b.Property<long>("id")
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("created_at")
-                        .HasColumnType("datetime")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("deleted_at")
-                        .HasColumnType("datetime")
-                        .HasColumnName("deleted_at");
-
-                    b.Property<long>("movie_id")
-                        .HasColumnType("bigint")
-                        .HasColumnName("movie_id");
-
-                    b.Property<long>("tag_id")
-                        .HasColumnType("bigint")
-                        .HasColumnName("tag_id");
-
-                    b.Property<DateTime?>("updated_at")
-                        .HasColumnType("datetime")
-                        .HasColumnName("updated_at");
-
-                    b.HasKey("id");
-
-                    b.ToTable("movie_tags");
-                });
-
             modelBuilder.Entity("dot_bioskop.Models.movies", b =>
                 {
                     b.Property<long>("id")
@@ -138,49 +109,6 @@ namespace dot_bioskop.Migrations
                     b.HasKey("id");
 
                     b.ToTable("movies");
-                });
-
-            modelBuilder.Entity("dot_bioskop.Models.order_items", b =>
-                {
-                    b.Property<long>("id")
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("created_at")
-                        .HasColumnType("datetime")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("deleted_at")
-                        .HasColumnType("datetime")
-                        .HasColumnName("deleted_at");
-
-                    b.Property<long>("movie_schedule_id")
-                        .HasColumnType("bigint")
-                        .HasColumnName("movie_schedule_id");
-
-                    b.Property<long>("order_id")
-                        .HasColumnType("bigint")
-                        .HasColumnName("order_id");
-
-                    b.Property<double>("price")
-                        .HasColumnType("double")
-                        .HasColumnName("price");
-
-                    b.Property<int>("qty")
-                        .HasColumnType("int")
-                        .HasColumnName("qty");
-
-                    b.Property<double>("sub_total_price")
-                        .HasColumnType("double")
-                        .HasColumnName("sub_total_price");
-
-                    b.Property<DateTime?>("updated_at")
-                        .HasColumnType("datetime")
-                        .HasColumnName("updated_at");
-
-                    b.HasKey("id");
-
-                    b.ToTable("order_items");
                 });
 
             modelBuilder.Entity("dot_bioskop.Models.orders", b =>
@@ -248,35 +176,6 @@ namespace dot_bioskop.Migrations
                     b.HasKey("id");
 
                     b.ToTable("studios");
-                });
-
-            modelBuilder.Entity("dot_bioskop.Models.tags", b =>
-                {
-                    b.Property<long>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("created_at")
-                        .HasColumnType("datetime")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("deleted_at")
-                        .HasColumnType("datetime")
-                        .HasColumnName("deleted_at");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("name");
-
-                    b.Property<DateTime?>("updated_at")
-                        .HasColumnType("datetime")
-                        .HasColumnName("updated_at");
-
-                    b.HasKey("id");
-
-                    b.ToTable("tags");
                 });
 
             modelBuilder.Entity("dot_bioskop.Models.users", b =>
@@ -353,44 +252,6 @@ namespace dot_bioskop.Migrations
                     b.Navigation("movie");
 
                     b.Navigation("studio");
-                });
-
-            modelBuilder.Entity("dot_bioskop.Models.movie_tags", b =>
-                {
-                    b.HasOne("dot_bioskop.Models.movies", "movie")
-                        .WithMany()
-                        .HasForeignKey("id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("dot_bioskop.Models.tags", "tag")
-                        .WithMany()
-                        .HasForeignKey("id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("movie");
-
-                    b.Navigation("tag");
-                });
-
-            modelBuilder.Entity("dot_bioskop.Models.order_items", b =>
-                {
-                    b.HasOne("dot_bioskop.Models.movie_schedules", "movie_schedule")
-                        .WithMany()
-                        .HasForeignKey("id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("dot_bioskop.Models.orders", "order")
-                        .WithMany()
-                        .HasForeignKey("id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("movie_schedule");
-
-                    b.Navigation("order");
                 });
 
             modelBuilder.Entity("dot_bioskop.Models.orders", b =>

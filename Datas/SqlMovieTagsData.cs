@@ -31,18 +31,18 @@ namespace dot_bioskop.Datas
 
         public movie_tags GetMovieTag(int id)
         {
-            var movie_tag = _myDBContext.movie_tags.Where(b => b.id == id).Include("tag").Include("movie").FirstOrDefault();
+            var movie_tag = _myDBContext.movie_tags.Where(b => b.id == id).Include(x => x.tag).Include(y => y.movie).FirstOrDefault();
             return movie_tag;
         }
 
         public List<movie_tags> GetMovieTags()
         {
-            return _myDBContext.movie_tags.Include("tag").Include("movie").ToList();
+            return _myDBContext.movie_tags.Include(x => x.tag).Include(y => y.movie).ToList();
         }
 
         public movie_tags SoftDeleteMovieTag(movie_tags movie_tag)
         {
-            var existingMovieTag = _myDBContext.movie_tags.Find(movie_tag.id);
+            var existingMovieTag = _myDBContext.movie_tags.Where(b => b.id == movie_tag.id).FirstOrDefault();
             if (existingMovieTag != null)
             {
                 existingMovieTag.deleted_at = movie_tag.deleted_at;
@@ -54,8 +54,8 @@ namespace dot_bioskop.Datas
 
         public movie_tags UpdateMovieTag(movie_tags movie_tag)
         {
-            var existingMovieTag = _myDBContext.movie_tags.Find(movie_tag.id);
-            if(existingMovieTag != null)
+            var existingMovieTag = _myDBContext.movie_tags.Where(b => b.id == movie_tag.id).FirstOrDefault();
+            if (existingMovieTag != null)
             {
                 existingMovieTag.movie_id = movie_tag.movie_id;
                 existingMovieTag.tag_id = movie_tag.tag_id;

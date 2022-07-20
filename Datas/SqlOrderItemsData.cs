@@ -32,17 +32,17 @@ namespace dot_bioskop.Datas
 
         public order_items GetOrderItem(int id)
         {
-            var order_item = _myDBContext.order_items.Where(b => b.id == id).Include("order").Include("movie_schedule").FirstOrDefault();
+            var order_item = _myDBContext.order_items.Where(b => b.id == id).Include(x => x.order).Include(y => y.movie_schedule).FirstOrDefault();
             return order_item;
         }
 
         public List<order_items> GetOrderItems()
         {
-            return _myDBContext.order_items.Include("order").Include("movie_schedule").ToList();
+            return _myDBContext.order_items.Include(x => x.order).Include(y => y.movie_schedule).ToList();
         }
         public order_items SoftDeleteOrderItem(order_items order_item)
         {
-            var existingOrderItem = _myDBContext.order_items.Find(order_item.id);
+            var existingOrderItem = _myDBContext.order_items.Where(b => b.id == order_item.id).FirstOrDefault();
             if (existingOrderItem != null)
             {
                 existingOrderItem.deleted_at = order_item.deleted_at;
@@ -54,8 +54,8 @@ namespace dot_bioskop.Datas
 
         public order_items UpdateOrderItem(order_items order_item)
         {
-            var existingOrderItem = _myDBContext.order_items.Find(order_item.id);
-            if(existingOrderItem != null)
+            var existingOrderItem = _myDBContext.order_items.Where(b => b.id == order_item.id).FirstOrDefault();
+            if (existingOrderItem != null)
             {
                 existingOrderItem.order_id = order_item.order_id;
                 existingOrderItem.movie_schedule_id = order_item.movie_schedule_id;

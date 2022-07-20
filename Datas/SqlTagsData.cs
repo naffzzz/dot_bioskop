@@ -30,7 +30,7 @@ namespace dot_bioskop.Datas
 
         public tags GetTag(int id)
         {
-            var tag = _myDBContext.tags.Find(id);
+            var tag = _myDBContext.tags.Where(b => b.id == id).FirstOrDefault(); 
             return tag;
         }
 
@@ -41,7 +41,7 @@ namespace dot_bioskop.Datas
 
         public tags SoftDeleteTag(tags tag)
         {
-            var existingTag = _myDBContext.tags.Find(tag.id);
+            var existingTag = _myDBContext.tags.Where(b => b.id == tag.id).FirstOrDefault();
             if (existingTag != null)
             {
                 existingTag.deleted_at = tag.deleted_at;
@@ -53,8 +53,8 @@ namespace dot_bioskop.Datas
 
         public tags UpdateTag(tags tag)
         {
-            var existingTag = _myDBContext.tags.Find(tag.id);
-            if(existingTag != null)
+            var existingTag = _myDBContext.tags.Where(b => b.id == tag.id).FirstOrDefault();
+            if (existingTag != null)
             {
                 existingTag.name = tag.name;
                 existingTag.updated_at = tag.updated_at;

@@ -31,19 +31,19 @@ namespace dot_bioskop.Datas
 
         public movie_schedules GetMovieSchedule(int id)
         {
-            var movie_schedule = _myDBContext.movie_schedules.Where(ms => ms.id == id).Include("movie").Include("studio").FirstOrDefault(); 
+            var movie_schedule = _myDBContext.movie_schedules.Where(ms => ms.id == id).Include(x => x.movie).Include(y => y.studio).FirstOrDefault(); 
             return movie_schedule;
         }
 
         public List<movie_schedules> GetMovieSchedules()
         {
-            return _myDBContext.movie_schedules.Include("movie").Include("studio").ToList();
+            return _myDBContext.movie_schedules.Include(x => x.movie).Include(y => y.studio).ToList();
         }
 
         public movie_schedules UpdateMovieSchedule(movie_schedules movie_schedule)
         {
-            var existingMovieSchedule = _myDBContext.movie_schedules.Find(movie_schedule.id);
-            if(existingMovieSchedule != null)
+            var existingMovieSchedule = _myDBContext.movie_schedules.Where(b => b.id == movie_schedule.id).FirstOrDefault();
+            if (existingMovieSchedule != null)
             {
                 existingMovieSchedule.movie_id = movie_schedule.movie_id;
                 existingMovieSchedule.studio_id = movie_schedule.studio_id;
@@ -60,7 +60,7 @@ namespace dot_bioskop.Datas
 
         public movie_schedules SoftDeleteMovieSchedule(movie_schedules movie_schedule)
         {
-            var existingMovieSchedule = _myDBContext.movie_schedules.Find(movie_schedule.id);
+            var existingMovieSchedule = _myDBContext.movie_schedules.Where(b => b.id == movie_schedule.id).FirstOrDefault();
             if (existingMovieSchedule != null)
             {
                 existingMovieSchedule.deleted_at = movie_schedule.deleted_at;

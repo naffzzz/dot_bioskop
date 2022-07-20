@@ -51,7 +51,7 @@ namespace dot_bioskop.Datas
 
         public users GetUser(int id)
         {
-            var user = _myDBContext.users.Find(id);
+            var user = _myDBContext.users.Where(b => b.id == id).FirstOrDefault(); 
             return user;
         }
         public users LoginUser(logins login)
@@ -67,7 +67,7 @@ namespace dot_bioskop.Datas
 
         public users SoftDeleteUser(users user)
         {
-            var existingUser = _myDBContext.users.Find(user.id);
+            var existingUser = _myDBContext.users.Where(b => b.id == user.id).FirstOrDefault(); 
             if (existingUser != null)
             {
                 existingUser.deleted_at = user.deleted_at;
@@ -79,8 +79,8 @@ namespace dot_bioskop.Datas
 
         public users UpdateUser(users user)
         {
-            var existingUser = _myDBContext.users.Find(user.id);
-            if(existingUser != null)
+            var existingUser = _myDBContext.users.Where(b => b.id == user.id).FirstOrDefault();
+            if (existingUser != null)
             {
                 existingUser.name = user.name;
                 existingUser.email = user.email;
