@@ -1,5 +1,4 @@
 ﻿using dot_bioskop.Models;
-using dot_bioskop.Interfaces;
 using dot_bioskop.Validations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using System;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
+using dot_bioskop.Datas;
+using dot_bioskop.DBContexts;
 
 namespace dot_bioskop.Controllers
 {
@@ -14,19 +15,20 @@ namespace dot_bioskop.Controllers
     [Route("[controller]")]
     public class MoviesController : ControllerBase
     {
-        private IMoviesData _moviesData;
         private readonly ILogger _logger;
+        private MyDBContext _myDBContext;
 
-        public MoviesController(ILogger<MoviesController> logger, IMoviesData moviesData)
+        public MoviesController(ILogger<MoviesController> logger, MyDBContext myDBContext)
         {
-            _moviesData = moviesData;
             _logger = logger;
+            _myDBContext = myDBContext;
         }
 
         [AllowAnonymous]
         [HttpGet("/apiNew/movies")]
         public IActionResult GetMovies()
         {
+            var _moviesData = new SqlMoviesData(_myDBContext);
             _logger.LogInformation("Log accessing all movies data");
             return Ok(_moviesData.GetMovies());
         }
@@ -35,6 +37,7 @@ namespace dot_bioskop.Controllers
         [HttpGet("/apiNew/movies/{id}")]
         public IActionResult GetMovie(int id)
         {
+            var _moviesData = new SqlMoviesData(_myDBContext);
             var movie = _moviesData.GetMovie(id);
             if (movie != null)
             {
@@ -52,6 +55,7 @@ namespace dot_bioskop.Controllers
         [HttpPost("/apiNew/movies")]
         public IActionResult AddMovie(movies movie)
         {
+            var _moviesData = new SqlMoviesData(_myDBContext);
             MoviesValidation Obj = new MoviesValidation();
             movie.created_at = DateTime.Now;
             ValidationResult Result = Obj.Validate(movie);
@@ -71,6 +75,7 @@ namespace dot_bioskop.Controllers
         [HttpDelete("/apiNew/movies/{id}")]
         public IActionResult DeleteMovie(int id)
         {
+            var _moviesData = new SqlMoviesData(_myDBContext);
             var movie = _moviesData.GetMovie(id);
 
             if (movie != null)
@@ -90,6 +95,7 @@ namespace dot_bioskop.Controllers
         [HttpPatch("/api/movies/{id}")]
         public IActionResult SoftDeleteMovie(int id)
         {
+            var _moviesData = new SqlMoviesData(_myDBContext);
             var existingMovie = _moviesData.GetMovie(id);
 
             if (existingMovie != null)
@@ -110,6 +116,7 @@ namespace dot_bioskop.Controllers
         [HttpPatch("/apiNew/movies/{id}")]
         public IActionResult UpdateMovie(int id, movies movie)
         {
+            var _moviesData = new SqlMoviesData(_myDBContext);
             var existingMovie = _moviesData.GetMovie(id);
 
             if (existingMovie != null)

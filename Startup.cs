@@ -68,14 +68,6 @@ namespace dot_bioskop
 
             services.AddSingleton<ICustomAuthenticationManager, CustomAuthenticationManager>();
             //services.AddSingleton<IJwtAuthenticationManager>(new JWTAuthenticationManager(key));
-            services.AddScoped<IUsersData, SqlUsersData>();
-            services.AddScoped<IMoviesData, SqlMoviesData>();
-            services.AddScoped<ITagsData, SqlTagsData>();
-            services.AddScoped<IStudiosData, SqlStudiosData>();
-            services.AddScoped<IMovieTagsData, SqlMovieTagsData>();
-            services.AddScoped<IOrdersData, SqlOrdersData>();
-            services.AddScoped<IMovieSchedulesData, SqlMovieSchedulesData>();
-            services.AddScoped<IOrderItemsData, SqlOrderItemsData>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

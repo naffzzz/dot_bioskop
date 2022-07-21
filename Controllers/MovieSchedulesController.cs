@@ -1,5 +1,4 @@
 ﻿using dot_bioskop.Models;
-using dot_bioskop.Interfaces;
 using dot_bioskop.Validations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using System;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
+using dot_bioskop.Datas;
+using dot_bioskop.DBContexts;
 
 namespace dot_bioskop.Controllers
 {
@@ -14,19 +15,20 @@ namespace dot_bioskop.Controllers
     [Route("[controller]")]
     public class MovieSchedulesController : ControllerBase
     {
-        private IMovieSchedulesData _movieSchedulesData;
         private readonly ILogger _logger;
+        private MyDBContext _myDBContext;
 
-        public MovieSchedulesController(ILogger<MovieSchedulesController> logger, IMovieSchedulesData movieSchedulesData)
+        public MovieSchedulesController(ILogger<MovieSchedulesController> logger, MyDBContext myDBContext)
         {
-            _movieSchedulesData = movieSchedulesData;
             _logger = logger;
+            _myDBContext = myDBContext;
         }
 
         [AllowAnonymous]
         [HttpGet("/apiNew/movieschedules")]
         public IActionResult GetMovieSchedules()
         {
+            var _movieSchedulesData = new SqlMovieSchedulesData(_myDBContext);
             _logger.LogInformation("Log accessing all movie schedules data");
             return Ok(_movieSchedulesData.GetMovieSchedules());
         }
@@ -35,6 +37,7 @@ namespace dot_bioskop.Controllers
         [HttpGet("/apiNew/movieschedules/{id}")]
         public IActionResult GetMovieSchedule(int id)
         {
+            var _movieSchedulesData = new SqlMovieSchedulesData(_myDBContext);
             var movie_schedule = _movieSchedulesData.GetMovieSchedule(id);
             if (movie_schedule != null)
             {
@@ -52,6 +55,7 @@ namespace dot_bioskop.Controllers
         [HttpPost("/apiNew/movieschedules")]
         public IActionResult AddMovieSchedule(movie_schedules movie_schedule)
         {
+            var _movieSchedulesData = new SqlMovieSchedulesData(_myDBContext);
             MovieSchedulesValidation Obj = new MovieSchedulesValidation();
             movie_schedule.created_at = DateTime.Now;
             ValidationResult Result = Obj.Validate(movie_schedule);
@@ -71,6 +75,7 @@ namespace dot_bioskop.Controllers
         [HttpDelete("/apiNew/movieschedules/{id}")]
         public IActionResult DeleteMovieSchedule(int id)
         {
+            var _movieSchedulesData = new SqlMovieSchedulesData(_myDBContext);
             var movie_schedule = _movieSchedulesData.GetMovieSchedule(id);
 
             if (movie_schedule != null)
@@ -90,6 +95,7 @@ namespace dot_bioskop.Controllers
         [HttpPatch("/api/movieschedules/{id}")]
         public IActionResult SoftDeleteMovieSchedule(int id)
         {
+            var _movieSchedulesData = new SqlMovieSchedulesData(_myDBContext);
             var movie_schedule = _movieSchedulesData.GetMovieSchedule(id);
 
             if (movie_schedule != null)
@@ -110,6 +116,7 @@ namespace dot_bioskop.Controllers
         [HttpPatch("/apiNew/movieschedules/{id}")]
         public IActionResult UpdateMovieSchedules(int id, movie_schedules movie_schedule)
         {
+            var _movieSchedulesData = new SqlMovieSchedulesData(_myDBContext);
             var existingMovieSchedule = _movieSchedulesData.GetMovieSchedule(id);
 
             if (existingMovieSchedule != null)

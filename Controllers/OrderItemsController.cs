@@ -1,5 +1,4 @@
 ﻿using dot_bioskop.Models;
-using dot_bioskop.Interfaces;
 using dot_bioskop.Validations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using System;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
+using dot_bioskop.Datas;
+using dot_bioskop.DBContexts;
 
 namespace dot_bioskop.Controllers
 {
@@ -14,19 +15,20 @@ namespace dot_bioskop.Controllers
     [Route("[controller]")]
     public class OrderItemsController : ControllerBase
     {
-        private IOrderItemsData _orderItemsData;
         private readonly ILogger _logger;
+        private MyDBContext _myDBContext;
 
-        public OrderItemsController(ILogger<OrderItemsController> logger, IOrderItemsData orderItemsData)
+        public OrderItemsController(ILogger<OrderItemsController> logger, MyDBContext myDBContext)
         {
-            _orderItemsData = orderItemsData;
             _logger = logger;
+            _myDBContext = myDBContext;
         }
 
         [Authorize(Roles = "1, 2")]
         [HttpGet("/apiNew/orderitems")]
         public IActionResult getOrderItems()
         {
+            var _orderItemsData = new SqlOrderItemsData(_myDBContext);
             _logger.LogInformation("Log accessing all order items data");
             return Ok(_orderItemsData.GetOrderItems());
         }
@@ -35,6 +37,7 @@ namespace dot_bioskop.Controllers
         [HttpGet("/apiNew/orderitems/{id}")]
         public IActionResult getOrderItem(int id)
         {
+            var _orderItemsData = new SqlOrderItemsData(_myDBContext);
             var order_item = _orderItemsData.GetOrderItem(id);
             if (order_item != null)
             {
@@ -52,6 +55,7 @@ namespace dot_bioskop.Controllers
         [HttpPost("/apiNew/orderitems")]
         public IActionResult addOrderItem(order_items order_item)
         {
+            var _orderItemsData = new SqlOrderItemsData(_myDBContext);
             OrderItemsValidation Obj = new OrderItemsValidation();
             order_item.created_at = DateTime.Now;
             ValidationResult Result = Obj.Validate(order_item);
@@ -71,6 +75,7 @@ namespace dot_bioskop.Controllers
         [HttpDelete("/apiNew/orderitems/{id}")]
         public IActionResult deleteOrderItem(int id)
         {
+            var _orderItemsData = new SqlOrderItemsData(_myDBContext);
             var order_item = _orderItemsData.GetOrderItem(id);
 
             if (order_item != null)
@@ -90,6 +95,7 @@ namespace dot_bioskop.Controllers
         [HttpPatch("/api/orderitems/{id}")]
         public IActionResult softDeleteOrderItem(int id)
         {
+            var _orderItemsData = new SqlOrderItemsData(_myDBContext);
             var existingOderItem = _orderItemsData.GetOrderItem(id);
 
             if (existingOderItem != null)
@@ -110,6 +116,7 @@ namespace dot_bioskop.Controllers
         [HttpPatch("/apiNew/orderitems/{id}")]
         public IActionResult updateOrderItem(int id, order_items order_item)
         {
+            var _orderItemsData = new SqlOrderItemsData(_myDBContext);
             var existingOderItem= _orderItemsData.GetOrderItem(id);
 
             if (existingOderItem != null)

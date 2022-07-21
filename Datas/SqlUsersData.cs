@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using dot_bioskop.Interfaces;
 using dot_bioskop.Models;
 using dot_bioskop.DBContexts;
 
 namespace dot_bioskop.Datas
 {
-    public class SqlUsersData : IUsersData
+    public class SqlUsersData
     {
         private MyDBContext _myDBContext;
 
@@ -24,13 +21,7 @@ namespace dot_bioskop.Datas
             return user;
         }
 
-        public users ActivationUser1(logins login)
-        {
-            var existingUser = _myDBContext.users.Where(b => b.email == login.email).Where(b => b.password == login.password).Where(b => b.activation_key == login.activation_key).FirstOrDefault();
-            return existingUser;
-        }
-
-        public users ActivationUser2(logins login)
+        public users ActivationUser(logins login)
         {
             var existingUser = _myDBContext.users.Where(b => b.email == login.email).Where(b => b.password == login.password).Where(b => b.activation_key == login.activation_key).FirstOrDefault();
             if (existingUser != null)

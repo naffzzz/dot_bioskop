@@ -1,5 +1,4 @@
 ﻿using dot_bioskop.Models;
-using dot_bioskop.Interfaces;
 using dot_bioskop.Validations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using System;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
+using dot_bioskop.Datas;
+using dot_bioskop.DBContexts;
 
 namespace dot_bioskop.Controllers
 {
@@ -14,19 +15,20 @@ namespace dot_bioskop.Controllers
     [Route("[controller]")]
     public class TagsController : ControllerBase
     {
-        private ITagsData _tagsData;
         private readonly ILogger _logger;
+        private MyDBContext _myDBContext;
 
-        public TagsController(ILogger<TagsController> logger, ITagsData tagsData)
+        public TagsController(ILogger<TagsController> logger, MyDBContext myDBContext)
         {
-            _tagsData = tagsData;
             _logger = logger;
+            _myDBContext = myDBContext;
         }
 
         [AllowAnonymous]
         [HttpGet("/apiNew/tags")]
         public IActionResult GetTags()
         {
+            var _tagsData = new SqlTagsData(_myDBContext);
             _logger.LogInformation("Log accessing all tags data");
             return Ok(_tagsData.GetTags());
         }
@@ -35,6 +37,7 @@ namespace dot_bioskop.Controllers
         [HttpGet("/apiNew/tags/{id}")]
         public IActionResult GetTag(int id)
         {
+            var _tagsData = new SqlTagsData(_myDBContext);
             var movie = _tagsData.GetTag(id);
             if (movie != null)
             {
@@ -52,6 +55,7 @@ namespace dot_bioskop.Controllers
         [HttpPost("/apiNew/tags")]
         public IActionResult AddTag(tags tag)
         {
+            var _tagsData = new SqlTagsData(_myDBContext);
             TagsValidation Obj = new TagsValidation();
             tag.created_at = DateTime.Now;
             ValidationResult Result = Obj.Validate(tag);
@@ -71,6 +75,7 @@ namespace dot_bioskop.Controllers
         [HttpDelete("/apiNew/tags/{id}")]
         public IActionResult DeleteTag(int id)
         {
+            var _tagsData = new SqlTagsData(_myDBContext);
             var tag = _tagsData.GetTag(id);
 
             if (tag != null)
@@ -90,6 +95,7 @@ namespace dot_bioskop.Controllers
         [HttpPatch("/api/tags/{id}")]
         public IActionResult SoftDeleteTag(int id)
         {
+            var _tagsData = new SqlTagsData(_myDBContext);
             var existingTag = _tagsData.GetTag(id);
 
             if (existingTag != null)
@@ -110,6 +116,7 @@ namespace dot_bioskop.Controllers
         [HttpPatch("/apiNew/tags/{id}")]
         public IActionResult UpdateTag(int id, tags tag)
         {
+            var _tagsData = new SqlTagsData(_myDBContext);
             var existingTag = _tagsData.GetTag(id);
 
             if (existingTag != null)

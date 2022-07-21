@@ -8,11 +8,11 @@ using System.Text.RegularExpressions;
 using System;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
-using MailKit;
 using MimeKit;
 using MailKit.Net.Smtp;
 using System.Threading;
-using System.Diagnostics;
+using dot_bioskop.Datas;
+using dot_bioskop.DBContexts;
 
 namespace dot_bioskop.Controllers
 {
@@ -20,21 +20,22 @@ namespace dot_bioskop.Controllers
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
-        private IUsersData _usersData;
         private readonly ILogger _logger;
         //private readonly IJwtAuthenticationManager jwtAuthenticationManager;
         private readonly ICustomAuthenticationManager customAuthenticationManager;
+        private MyDBContext _myDBContext;
 
-        public UsersController(ILogger<UsersController> logger, IUsersData usersData, 
+        public UsersController(ILogger<UsersController> logger,
             //IJwtAuthenticationManager jwtAuthenticationManager,
-            ICustomAuthenticationManager customAuthenticationManager
+            ICustomAuthenticationManager customAuthenticationManager,
+            MyDBContext myDBContext
             )
         {
-            _usersData = usersData;
             _logger = logger;
             //this.jwtAuthenticationManager = jwtAuthenticationManager;
             this.customAuthenticationManager = customAuthenticationManager;
-        }
+            _myDBContext = myDBContext;
+    }
 
         public static bool EmailValidation(string emailAddress)
         {
@@ -56,7 +57,7 @@ namespace dot_bioskop.Controllers
             return new string(chars);
         }
 
-        protected void SendEmail(string activation_key, string name, string email)
+        protected void SendEmail(string activation_key, string name, string email, string password)
         {
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress("DOT Bioskop", "no-reply@dotbioskop.com"));
@@ -64,7 +65,7 @@ namespace dot_bioskop.Controllers
             message.Subject = "Kode aktivasi akun DOT Bioskop";
             message.Body = new TextPart("plain")
             {
-                Text = "Kode aktivasi kamu adalah " + activation_key,
+                Text = "Password kamu adalah " + password + " Kode aktivasi kamu adalah " + activation_key,
             };
             using (var client = new SmtpClient())
             {
@@ -80,6 +81,7 @@ namespace dot_bioskop.Controllers
         [HttpGet("/apiNew/users")]
         public IActionResult GetUsers()
         {
+            var _usersData = new SqlUsersData(_myDBContext);
             _logger.LogInformation("Log accessing all users data");
             return Ok(_usersData.GetUsers());
         }
@@ -88,6 +90,7 @@ namespace dot_bioskop.Controllers
         [HttpGet("/apiNew/users/{id}")]
         public IActionResult GetUser(int id)
         {
+            var _usersData = new SqlUsersData(_myDBContext);
             var user = _usersData.GetUser(id);
             if (user != null){
                 _logger.LogInformation("Log accessing available specific user data (" + id + ")");
@@ -104,6 +107,7 @@ namespace dot_bioskop.Controllers
         [HttpPost("/api/login/")]
         public IActionResult LoginUser(logins login)
         {
+            var _usersData = new SqlUsersData(_myDBContext);
             var existingUser = _usersData.LoginUser(login);
 
             if (existingUser != null)
@@ -127,10 +131,12 @@ namespace dot_bioskop.Controllers
         [HttpPost("/apiNew/users")]
         public IActionResult AddUser(users user)
         {
+            var _usersData = new SqlUsersData(_myDBContext);
             UsersValidation Obj = new UsersValidation();
             if (EmailValidation(user.email) == true)
             {
                 user.created_at = DateTime.Now;
+                user.password = CreateRandomString(8);
                 user.activation_key = CreateRandomString(12);
                 _logger.LogInformation("Log adding user data");
                 _usersData.AddUser(user);
@@ -141,7 +147,7 @@ namespace dot_bioskop.Controllers
                 message.Subject = "Kode aktivasi akun DOT Bioskop";
                 message.Body = new TextPart("plain")
                 {
-                    Text = "Kode aktivasi kamu adalah " + user.activation_key,
+                    Text = "Password kamu adalah " + user.password + " Kode aktivasi kamu adalah " + user.activation_key,
                 };
                 using (var client = new SmtpClient())
                     {
@@ -164,14 +170,14 @@ namespace dot_bioskop.Controllers
         [HttpPost("/api/activationuser")]
         public IActionResult ActivationUser(logins user)
         {
+            var _usersData = new SqlUsersData(_myDBContext);
             UsersValidation Obj = new UsersValidation();
             if (EmailValidation(user.email) == true)
             {
                 _logger.LogInformation("Log activating user data ("+ user.email +")");
-                var result = _usersData.ActivationUser1(user);
+                var result = _usersData.ActivationUser(user);
                 if (result != null)
                 {
-                    _usersData.ActivationUser2(user);
                     return Ok("Akun sudah teraktivasi");
                 }
                 else
@@ -189,18 +195,23 @@ namespace dot_bioskop.Controllers
         [HttpPost("/api/users")]
         public IActionResult RegisterUser(users user)
         {
+            var _usersData = new SqlUsersData(_myDBContext);
             UsersValidation Obj = new UsersValidation();
             if (EmailValidation(user.email) == true)
             {
 
                 user.created_at = DateTime.Now;
-                var activation_key = CreateRandomString(12);
-                user.activation_key = activation_key;
+                if (user.password == null )
+                {
+                    user.password = CreateRandomString(8);
+                }
+                user.activation_key = CreateRandomString(12);
+                string activation_key = user.activation_key;
                 user.is_confirmed = 0;
                 ValidationResult Result = Obj.Validate(user);
                 if (Result.IsValid)
                 {
-                    Thread t1 = new Thread(() => SendEmail(activation_key, user.name, user.email));
+                    Thread t1 = new Thread(() => SendEmail(activation_key, user.name, user.email, user.password));
 
                     t1.Start();
 
@@ -224,6 +235,7 @@ namespace dot_bioskop.Controllers
         [HttpDelete("/apiNew/users/{id}")]
         public IActionResult DeleteUser(int id)
         {
+            var _usersData = new SqlUsersData(_myDBContext);
             var user = _usersData.GetUser(id);
 
             if (user != null)
@@ -244,6 +256,7 @@ namespace dot_bioskop.Controllers
         [HttpPatch("/api/users/{id}")]
         public IActionResult SoftDeleteUser(int id)
         {
+            var _usersData = new SqlUsersData(_myDBContext);
             var existingUser = _usersData.GetUser(id);
 
             if (existingUser != null)
@@ -264,6 +277,7 @@ namespace dot_bioskop.Controllers
         [HttpPatch("/apiNew/users/{id}")]
         public IActionResult UpdateUser(int id, users user)
         {
+            var _usersData = new SqlUsersData(_myDBContext);
             var existingUser = _usersData.GetUser(id);
 
             if (existingUser != null)

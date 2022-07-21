@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using dot_bioskop.Interfaces;
 using dot_bioskop.Models;
 using dot_bioskop.DBContexts;
 
 namespace dot_bioskop.Datas
 {
-    public class SqlTagsData : ITagsData
+    public class SqlTagsData
     {
         private MyDBContext _myDBContext;
 

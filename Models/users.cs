@@ -22,7 +22,7 @@ namespace dot_bioskop.Models
         public string avatar { get; set; }
         [Required, Column(name: "is_admin", TypeName = "int")]
         public int is_admin { get; set; }
-        [Required, Column(name: "activation_key", TypeName = "varchar(12)")]
+        [Column(name: "activation_key", TypeName = "varchar(12)")]
         public string activation_key { get; set; }
         [Required, Column(name: "is_confirmed", TypeName = "bool")]
         public int is_confirmed { get; set; }

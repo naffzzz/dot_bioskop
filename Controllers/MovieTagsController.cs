@@ -1,5 +1,4 @@
 ﻿using dot_bioskop.Models;
-using dot_bioskop.Interfaces;
 using dot_bioskop.Validations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using System;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
+using dot_bioskop.Datas;
+using dot_bioskop.DBContexts;
 
 namespace dot_bioskop.Controllers
 {
@@ -14,19 +15,20 @@ namespace dot_bioskop.Controllers
     [Route("[controller]")]
     public class MovieTagsController : ControllerBase
     {
-        private IMovieTagsData _movieTagsData;
         private readonly ILogger _logger;
+        private MyDBContext _myDBContext;
 
-        public MovieTagsController(ILogger<MovieTagsController> logger, IMovieTagsData movieTagsData)
+        public MovieTagsController(ILogger<MovieTagsController> logger, MyDBContext myDBContext)
         {
-            _movieTagsData = movieTagsData;
             _logger = logger;
+            _myDBContext = myDBContext;
         }
         
         [AllowAnonymous]
         [HttpGet("/apiNew/movietags")]
         public IActionResult getMovieTags()
         {
+            var _movieTagsData = new SqlMovieTagsData(_myDBContext);
             _logger.LogInformation("Log accessing all movie tags data");
             return Ok(_movieTagsData.GetMovieTags());
         }
@@ -34,6 +36,7 @@ namespace dot_bioskop.Controllers
         [HttpGet("/apiNew/movietags/{id}")]
         public IActionResult GetMovieTag(int id)
         {
+            var _movieTagsData = new SqlMovieTagsData(_myDBContext);
             var movie = _movieTagsData.GetMovieTag(id);
             if (movie != null)
             {
@@ -51,6 +54,7 @@ namespace dot_bioskop.Controllers
         [HttpPost("/apiNew/movietags")]
         public IActionResult AddMovieTag(movie_tags movie_tag)
         {
+            var _movieTagsData = new SqlMovieTagsData(_myDBContext);
             MovieTagsValidation Obj = new MovieTagsValidation();
             movie_tag.created_at = DateTime.Now;
             ValidationResult Result = Obj.Validate(movie_tag);
@@ -70,6 +74,7 @@ namespace dot_bioskop.Controllers
         [HttpDelete("/apiNew/movietags/{id}")]
         public IActionResult DeleteMovieTag(int id)
         {
+            var _movieTagsData = new SqlMovieTagsData(_myDBContext);
             var movie_tag = _movieTagsData.GetMovieTag(id);
 
             if (movie_tag != null)
@@ -89,6 +94,7 @@ namespace dot_bioskop.Controllers
         [HttpPatch("/api/movietags/{id}")]
         public IActionResult SoftDeleteMovieTag(int id)
         {
+            var _movieTagsData = new SqlMovieTagsData(_myDBContext);
             var existingMovieTag = _movieTagsData.GetMovieTag(id);
 
             if (existingMovieTag != null)
@@ -109,6 +115,7 @@ namespace dot_bioskop.Controllers
         [HttpPatch("/apiNew/movietags/{id}")]
         public IActionResult UpdateMovieTag(int id, movie_tags movie_tag)
         {
+            var _movieTagsData = new SqlMovieTagsData(_myDBContext);
             var existingMovieTag = _movieTagsData.GetMovieTag(id);
 
             if (existingMovieTag != null)
