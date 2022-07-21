@@ -22,7 +22,7 @@ namespace dot_bioskop.Controllers
     {
         private readonly ILogger _logger;
         //private readonly IJwtAuthenticationManager jwtAuthenticationManager;
-        private readonly ICustomAuthenticationManager customAuthenticationManager;
+        private readonly ICustomAuthenticationManager _customAuthenticationManager;
         private MyDBContext _myDBContext;
 
         public UsersController(ILogger<UsersController> logger,
@@ -33,7 +33,7 @@ namespace dot_bioskop.Controllers
         {
             _logger = logger;
             //this.jwtAuthenticationManager = jwtAuthenticationManager;
-            this.customAuthenticationManager = customAuthenticationManager;
+            _customAuthenticationManager = customAuthenticationManager;
             _myDBContext = myDBContext;
     }
 
@@ -114,7 +114,7 @@ namespace dot_bioskop.Controllers
             {
                 //var token = jwtAuthenticationManager.Authenticate(login.email, login.password, existingUser.is_admin.ToString());
                 string is_admin = existingUser.is_admin.ToString();
-                var token = customAuthenticationManager.Authenticate(login.email, is_admin);
+                var token = _customAuthenticationManager.Authenticate(login.email, is_admin);
                 if (token == null)
                     return Unauthorized();
                 _logger.LogInformation("Log login available user data (" + login + ")");

@@ -1,19 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using dot_bioskop.Models;
-using System.Threading.Tasks;
 using dot_bioskop.Interfaces;
 
 namespace dot_bioskop
 {
-    public interface ICustomAuthenticationManager
-    {
-        string Authenticate(string email, string is_admin);
-
-        IDictionary<string, Tuple<string, string>> Tokens { get; }
-    }
-
     public class CustomAuthenticationManager : ICustomAuthenticationManager
     {
 

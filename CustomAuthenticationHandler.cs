@@ -18,7 +18,7 @@ namespace dot_bioskop
 
     public class CustomAuthenticationHandler : AuthenticationHandler<BasicAuthenticationOptions>
     {
-        private readonly ICustomAuthenticationManager customAuthenticationManager;
+        private readonly ICustomAuthenticationManager _customAuthenticationManager;
 
         public CustomAuthenticationHandler(
             IOptionsMonitor<BasicAuthenticationOptions> options,
@@ -28,7 +28,7 @@ namespace dot_bioskop
             ICustomAuthenticationManager customAuthenticationManager)
             : base(options, logger, encoder, clock)
         {
-            this.customAuthenticationManager = customAuthenticationManager;
+            _customAuthenticationManager = customAuthenticationManager;
         }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -66,7 +66,7 @@ namespace dot_bioskop
 
         private AuthenticateResult validateToken(string token)
         {
-            var validatedToken = customAuthenticationManager.Tokens.FirstOrDefault(t => t.Key == token);
+            var validatedToken = _customAuthenticationManager.Tokens.FirstOrDefault(t => t.Key == token);
             if (validatedToken.Key == null)
             {
                 return AuthenticateResult.Fail("Unauthorized");
