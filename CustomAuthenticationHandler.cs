@@ -7,7 +7,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using dot_bioskop.Interfaces;
 using System.Security.Principal;
 
 namespace dot_bioskop
@@ -18,17 +17,16 @@ namespace dot_bioskop
 
     public class CustomAuthenticationHandler : AuthenticationHandler<BasicAuthenticationOptions>
     {
-        private readonly ICustomAuthenticationManager _customAuthenticationManager;
+        //private readonly ICustomAuthenticationManager _customAuthenticationManager;
 
         public CustomAuthenticationHandler(
             IOptionsMonitor<BasicAuthenticationOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
-            ISystemClock clock,
-            ICustomAuthenticationManager customAuthenticationManager)
+            ISystemClock clock)
             : base(options, logger, encoder, clock)
         {
-            _customAuthenticationManager = customAuthenticationManager;
+            //_customAuthenticationManager = customAuthenticationManager;
         }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -66,6 +64,7 @@ namespace dot_bioskop
 
         private AuthenticateResult validateToken(string token)
         {
+            var _customAuthenticationManager = new CustomAuthenticationManager();
             var validatedToken = _customAuthenticationManager.Tokens.FirstOrDefault(t => t.Key == token);
             if (validatedToken.Key == null)
             {

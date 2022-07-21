@@ -1,5 +1,4 @@
 ﻿using dot_bioskop.Models;
-using dot_bioskop.Interfaces;
 using dot_bioskop.Validations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,18 +21,18 @@ namespace dot_bioskop.Controllers
     {
         private readonly ILogger _logger;
         //private readonly IJwtAuthenticationManager jwtAuthenticationManager;
-        private readonly ICustomAuthenticationManager _customAuthenticationManager;
+        //private readonly ICustomAuthenticationManager _customAuthenticationManager;
         private MyDBContext _myDBContext;
 
         public UsersController(ILogger<UsersController> logger,
             //IJwtAuthenticationManager jwtAuthenticationManager,
-            ICustomAuthenticationManager customAuthenticationManager,
+            //ICustomAuthenticationManager customAuthenticationManager,
             MyDBContext myDBContext
             )
         {
             _logger = logger;
             //this.jwtAuthenticationManager = jwtAuthenticationManager;
-            _customAuthenticationManager = customAuthenticationManager;
+            //_customAuthenticationManager = customAuthenticationManager;
             _myDBContext = myDBContext;
     }
 
@@ -109,7 +108,7 @@ namespace dot_bioskop.Controllers
         {
             var _usersData = new SqlUsersData(_myDBContext);
             var existingUser = _usersData.LoginUser(login);
-
+            var _customAuthenticationManager = new CustomAuthenticationManager();
             if (existingUser != null)
             {
                 //var token = jwtAuthenticationManager.Authenticate(login.email, login.password, existingUser.is_admin.ToString());

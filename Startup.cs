@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using dot_bioskop.DBContexts;
-using dot_bioskop.Interfaces;
 using dot_bioskop.Models;
 using dot_bioskop.Datas;
 using Microsoft.EntityFrameworkCore;
@@ -66,7 +65,7 @@ namespace dot_bioskop
             //    };
             //});
 
-            services.AddSingleton<ICustomAuthenticationManager, CustomAuthenticationManager>();
+            //services.AddSingleton<ICustomAuthenticationManager, CustomAuthenticationManager>();
             //services.AddSingleton<IJwtAuthenticationManager>(new JWTAuthenticationManager(key));
         }
 

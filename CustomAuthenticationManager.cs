@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using dot_bioskop.Interfaces;
 
 namespace dot_bioskop
 {
-    public class CustomAuthenticationManager : ICustomAuthenticationManager
+    public class CustomAuthenticationManager
     {
 
-        private readonly IDictionary<string, Tuple<string, string>> tokens = 
+        private static readonly IDictionary<string, Tuple<string, string>> tokens = 
             new Dictionary<string, Tuple<string, string>>();
 
         public IDictionary<string, Tuple<string, string>> Tokens => tokens;
