@@ -7,9 +7,9 @@ namespace dot_bioskop.Models
     [Table(name: "orders")]
     public class orders
     {
-        [Key, Column(name: "id", TypeName = "bigint")]
+        [Key, Column(name: "id", TypeName = "int")]
         public int id { get; set; }
-        [Required, Column(name: "user_id", TypeName = "bigint")]
+        [Required, Column(name: "user_id", TypeName = "int")]
         public int user_id { get; set; }
         [Required, Column(name: "payment_method", TypeName = "int")]
         public int payment_method { get; set; }

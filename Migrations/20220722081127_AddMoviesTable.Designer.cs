@@ -9,8 +9,8 @@ using dot_bioskop.DBContexts;
 namespace dot_bioskop.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20220720052253_CreateStudiosTable")]
-    partial class CreateStudiosTable
+    [Migration("20220722081127_AddMoviesTable")]
+    partial class AddMoviesTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -19,10 +19,53 @@ namespace dot_bioskop.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.5");
 
+            modelBuilder.Entity("dot_bioskop.Models.movies", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("created_at")
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime?>("deleted_at")
+                        .HasColumnType("datetime")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<string>("overview")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("overview");
+
+                    b.Property<DateTime>("play_until")
+                        .HasColumnType("datetime")
+                        .HasColumnName("play_until");
+
+                    b.Property<string>("poster")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("poster");
+
+                    b.Property<string>("title")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("title");
+
+                    b.Property<DateTime?>("updated_at")
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("id");
+
+                    b.ToTable("movies");
+                });
+
             modelBuilder.Entity("dot_bioskop.Models.orders", b =>
                 {
-                    b.Property<long>("id")
-                        .HasColumnType("bigint")
+                    b.Property<int>("id")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
                     b.Property<DateTime>("created_at")
@@ -45,8 +88,8 @@ namespace dot_bioskop.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("updated_at");
 
-                    b.Property<long>("user_id")
-                        .HasColumnType("bigint")
+                    b.Property<int>("user_id")
+                        .HasColumnType("int")
                         .HasColumnName("user_id");
 
                     b.HasKey("id");
@@ -56,9 +99,9 @@ namespace dot_bioskop.Migrations
 
             modelBuilder.Entity("dot_bioskop.Models.studios", b =>
                 {
-                    b.Property<long>("id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
                     b.Property<DateTime>("created_at")
@@ -88,13 +131,12 @@ namespace dot_bioskop.Migrations
 
             modelBuilder.Entity("dot_bioskop.Models.users", b =>
                 {
-                    b.Property<long>("id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
                     b.Property<string>("activation_key")
-                        .IsRequired()
                         .HasColumnType("varchar(12)")
                         .HasColumnName("activation_key");
 

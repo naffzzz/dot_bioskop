@@ -3,37 +3,34 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dot_bioskop.Migrations
 {
-    public partial class CreateOrderItemsTable : Migration
+    public partial class AddMovieTagsTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "order_items",
+                name: "movie_tags",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false),
-                    order_id = table.Column<long>(type: "bigint", nullable: false),
-                    movie_schedule_id = table.Column<long>(type: "bigint", nullable: false),
-                    qty = table.Column<int>(type: "int", nullable: false),
-                    price = table.Column<double>(type: "double", nullable: false),
-                    sub_total_price = table.Column<double>(type: "double", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false),
+                    movie_id = table.Column<int>(type: "int", nullable: false),
+                    tag_id = table.Column<int>(type: "int", nullable: false),
                     created_at = table.Column<DateTime>(type: "datetime", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime", nullable: true),
                     deleted_at = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_order_items", x => x.id);
+                    table.PrimaryKey("PK_movie_tags", x => x.id);
                     table.ForeignKey(
-                        name: "FK_order_items_movie_schedules_id",
+                        name: "FK_movie_tags_movies_id",
                         column: x => x.id,
-                        principalTable: "movie_schedules",
+                        principalTable: "movies",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_order_items_orders_id",
+                        name: "FK_movie_tags_tags_id",
                         column: x => x.id,
-                        principalTable: "orders",
+                        principalTable: "tags",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -43,7 +40,7 @@ namespace dot_bioskop.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "order_items");
+                name: "movie_tags");
         }
     }
 }

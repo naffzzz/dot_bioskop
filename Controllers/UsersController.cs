@@ -201,7 +201,7 @@ namespace dot_bioskop.Controllers
 
         [AllowAnonymous]
         [HttpPost("/api/users")]
-        public IActionResult RegisterUser(List<IFormFile> files, users user)
+        public IActionResult RegisterUser(users user)
         {
             var _usersData = new SqlUsersData(_myDBContext);
             UsersValidation Obj = new UsersValidation();
@@ -218,20 +218,21 @@ namespace dot_bioskop.Controllers
                 user.is_confirmed = 0;
 
                 //file
-                if (files.Count == 0)
-                    return BadRequest();
+                var net = new System.Net.WebClient();
+                var data = net.DownloadData("https://id.aorus.com/upload/Downloads/F_20220215192360Aa8_Yg.PNG");
+                var content = new System.IO.MemoryStream(data);
+                //var contentType = "APPLICATION/octet-stream";
+                var fileName = user.id + "_" + "default.png";
+
                 string path = Path.Combine(_webHostEnvironment.ContentRootPath, "Files");
 
-                foreach (var file in files)
+                var filePath = Path.Combine(path, fileName); 
+                using(var stream = new FileStream(filePath,FileMode.Create))
                 {
-                    var filePath = Path.Combine(path, file.FileName + DateTime.Now); 
-                    using(var stream = new FileStream(filePath,FileMode.Create))
-                    {
-                        file.CopyTo(stream);
-                    }
+                    content.CopyTo(stream);
                 }
 
-                user.avatar = files[0].FileName;
+                user.avatar = fileName;
 
                 ValidationResult Result = Obj.Validate(user);
                 if (Result.IsValid)
@@ -267,7 +268,7 @@ namespace dot_bioskop.Controllers
 
             foreach (var file in files)
             {
-                var filePath = Path.Combine(path, file.FileName);
+                var filePath = Path.Combine(path, HttpContext.Session.GetString("loginId") + "_" + file.FileName);
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     file.CopyTo(stream);

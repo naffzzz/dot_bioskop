@@ -7,11 +7,11 @@ namespace dot_bioskop.Models
     [Table(name: "order_items")]
     public class order_items
     {
-        [Key, Column(name: "id", TypeName = "bigint")]
+        [Key, Column(name: "id", TypeName = "int")]
         public int id { get; set; }
-        [Required, Column(name: "order_id", TypeName = "bigint")]
+        [Required, Column(name: "order_id", TypeName = "int")]
         public int order_id { get; set; }
-        [Required, Column(name: "movie_schedule_id", TypeName = "bigint")]
+        [Required, Column(name: "movie_schedule_id", TypeName = "int")]
         public int movie_schedule_id { get; set; }
         [Required, Column(name: "qty", TypeName = "int")]
         public int qty { get; set; }

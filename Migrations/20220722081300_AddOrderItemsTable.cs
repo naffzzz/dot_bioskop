@@ -3,40 +3,37 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dot_bioskop.Migrations
 {
-    public partial class CreateMovieSchedulesTable : Migration
+    public partial class AddOrderItemsTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "movie_schedules",
+                name: "order_items",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false),
-                    movie_id = table.Column<long>(type: "bigint", nullable: false),
-                    studio_id = table.Column<long>(type: "bigint", nullable: false),
-                    start_time = table.Column<string>(type: "varchar(255)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    end_time = table.Column<string>(type: "varchar(255)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    id = table.Column<int>(type: "int", nullable: false),
+                    order_id = table.Column<int>(type: "int", nullable: false),
+                    movie_schedule_id = table.Column<int>(type: "int", nullable: false),
+                    qty = table.Column<int>(type: "int", nullable: false),
                     price = table.Column<double>(type: "double", nullable: false),
-                    date = table.Column<DateTime>(type: "datetime", nullable: false),
+                    sub_total_price = table.Column<double>(type: "double", nullable: false),
                     created_at = table.Column<DateTime>(type: "datetime", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime", nullable: true),
                     deleted_at = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_movie_schedules", x => x.id);
+                    table.PrimaryKey("PK_order_items", x => x.id);
                     table.ForeignKey(
-                        name: "FK_movie_schedules_movies_id",
+                        name: "FK_order_items_movie_schedules_id",
                         column: x => x.id,
-                        principalTable: "movies",
+                        principalTable: "movie_schedules",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_movie_schedules_studios_id",
+                        name: "FK_order_items_orders_id",
                         column: x => x.id,
-                        principalTable: "studios",
+                        principalTable: "orders",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -46,7 +43,7 @@ namespace dot_bioskop.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "movie_schedules");
+                name: "order_items");
         }
     }
 }

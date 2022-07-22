@@ -4,25 +4,25 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dot_bioskop.Migrations
 {
-    public partial class CreateTagsTable : Migration
+    public partial class AddStudiosTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "tags",
+                name: "studios",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    name = table.Column<string>(type: "varchar(100)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    studio_number = table.Column<long>(type: "bigint", nullable: false),
+                    seat_capacity = table.Column<long>(type: "bigint", nullable: false),
                     created_at = table.Column<DateTime>(type: "datetime", nullable: false),
                     updated_at = table.Column<DateTime>(type: "datetime", nullable: true),
                     deleted_at = table.Column<DateTime>(type: "datetime", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tags", x => x.id);
+                    table.PrimaryKey("PK_studios", x => x.id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
         }
@@ -30,7 +30,7 @@ namespace dot_bioskop.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "tags");
+                name: "studios");
         }
     }
 }

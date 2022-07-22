@@ -7,11 +7,11 @@ namespace dot_bioskop.Models
     [Table(name: "movie_tags")]
     public class movie_tags
     {
-        [Key, Column(name: "id", TypeName = "bigint")]
+        [Key, Column(name: "id", TypeName = "int")]
         public int id { get; set; }
-        [Required, Column(name: "movie_id", TypeName = "bigint")]
+        [Required, Column(name: "movie_id", TypeName = "int")]
         public int movie_id { get; set; }
-        [Required, Column(name: "tag_id", TypeName = "bigint")]
+        [Required, Column(name: "tag_id", TypeName = "int")]
         public int tag_id { get; set; }
         [Required, Column(name: "created_at", TypeName = "datetime")]
         public DateTime created_at { get; set; }

@@ -9,8 +9,8 @@ using dot_bioskop.DBContexts;
 namespace dot_bioskop.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20220720052225_CreateOrdersTable")]
-    partial class CreateOrdersTable
+    [Migration("20220722080747_AddUsersTable")]
+    partial class AddUsersTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -19,50 +19,14 @@ namespace dot_bioskop.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.5");
 
-            modelBuilder.Entity("dot_bioskop.Models.orders", b =>
-                {
-                    b.Property<long>("id")
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("created_at")
-                        .HasColumnType("datetime")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("deleted_at")
-                        .HasColumnType("datetime")
-                        .HasColumnName("deleted_at");
-
-                    b.Property<int>("payment_method")
-                        .HasColumnType("int")
-                        .HasColumnName("payment_method");
-
-                    b.Property<double>("total_item_price")
-                        .HasColumnType("double")
-                        .HasColumnName("total_item_price");
-
-                    b.Property<DateTime?>("updated_at")
-                        .HasColumnType("datetime")
-                        .HasColumnName("updated_at");
-
-                    b.Property<long>("user_id")
-                        .HasColumnType("bigint")
-                        .HasColumnName("user_id");
-
-                    b.HasKey("id");
-
-                    b.ToTable("orders");
-                });
-
             modelBuilder.Entity("dot_bioskop.Models.users", b =>
                 {
-                    b.Property<long>("id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
                     b.Property<string>("activation_key")
-                        .IsRequired()
                         .HasColumnType("varchar(12)")
                         .HasColumnName("activation_key");
 
@@ -109,17 +73,6 @@ namespace dot_bioskop.Migrations
                     b.HasKey("id");
 
                     b.ToTable("users");
-                });
-
-            modelBuilder.Entity("dot_bioskop.Models.orders", b =>
-                {
-                    b.HasOne("dot_bioskop.Models.users", "user")
-                        .WithMany()
-                        .HasForeignKey("id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("user");
                 });
 #pragma warning restore 612, 618
         }

@@ -7,7 +7,7 @@ namespace dot_bioskop.Models
     [Table(name:"users")]
     public class users
     {
-        [Key, Column(name:"id", TypeName ="bigint")]
+        [Key, Column(name:"id", TypeName ="int"), DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
         [Required, Column(name:"name", TypeName ="varchar(255)")]
         public string name { get; set; }

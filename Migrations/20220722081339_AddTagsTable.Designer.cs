@@ -9,8 +9,8 @@ using dot_bioskop.DBContexts;
 namespace dot_bioskop.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20220720052459_CreateMovieSchedulesTable")]
-    partial class CreateMovieSchedulesTable
+    [Migration("20220722081339_AddTagsTable")]
+    partial class AddTagsTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,8 +21,8 @@ namespace dot_bioskop.Migrations
 
             modelBuilder.Entity("dot_bioskop.Models.movie_schedules", b =>
                 {
-                    b.Property<long>("id")
-                        .HasColumnType("bigint")
+                    b.Property<int>("id")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
                     b.Property<DateTime>("created_at")
@@ -42,8 +42,8 @@ namespace dot_bioskop.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("end_time");
 
-                    b.Property<long>("movie_id")
-                        .HasColumnType("bigint")
+                    b.Property<int>("movie_id")
+                        .HasColumnType("int")
                         .HasColumnName("movie_id");
 
                     b.Property<double>("price")
@@ -55,8 +55,8 @@ namespace dot_bioskop.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("start_time");
 
-                    b.Property<long>("studio_id")
-                        .HasColumnType("bigint")
+                    b.Property<int>("studio_id")
+                        .HasColumnType("int")
                         .HasColumnName("studio_id");
 
                     b.Property<DateTime?>("updated_at")
@@ -70,9 +70,9 @@ namespace dot_bioskop.Migrations
 
             modelBuilder.Entity("dot_bioskop.Models.movies", b =>
                 {
-                    b.Property<long>("id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
                     b.Property<DateTime>("created_at")
@@ -111,10 +111,53 @@ namespace dot_bioskop.Migrations
                     b.ToTable("movies");
                 });
 
+            modelBuilder.Entity("dot_bioskop.Models.order_items", b =>
+                {
+                    b.Property<int>("id")
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("created_at")
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime?>("deleted_at")
+                        .HasColumnType("datetime")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<int>("movie_schedule_id")
+                        .HasColumnType("int")
+                        .HasColumnName("movie_schedule_id");
+
+                    b.Property<int>("order_id")
+                        .HasColumnType("int")
+                        .HasColumnName("order_id");
+
+                    b.Property<double>("price")
+                        .HasColumnType("double")
+                        .HasColumnName("price");
+
+                    b.Property<int>("qty")
+                        .HasColumnType("int")
+                        .HasColumnName("qty");
+
+                    b.Property<double>("sub_total_price")
+                        .HasColumnType("double")
+                        .HasColumnName("sub_total_price");
+
+                    b.Property<DateTime?>("updated_at")
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("id");
+
+                    b.ToTable("order_items");
+                });
+
             modelBuilder.Entity("dot_bioskop.Models.orders", b =>
                 {
-                    b.Property<long>("id")
-                        .HasColumnType("bigint")
+                    b.Property<int>("id")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
                     b.Property<DateTime>("created_at")
@@ -137,8 +180,8 @@ namespace dot_bioskop.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("updated_at");
 
-                    b.Property<long>("user_id")
-                        .HasColumnType("bigint")
+                    b.Property<int>("user_id")
+                        .HasColumnType("int")
                         .HasColumnName("user_id");
 
                     b.HasKey("id");
@@ -148,9 +191,9 @@ namespace dot_bioskop.Migrations
 
             modelBuilder.Entity("dot_bioskop.Models.studios", b =>
                 {
-                    b.Property<long>("id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
                     b.Property<DateTime>("created_at")
@@ -178,15 +221,43 @@ namespace dot_bioskop.Migrations
                     b.ToTable("studios");
                 });
 
+            modelBuilder.Entity("dot_bioskop.Models.tags", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("created_at")
+                        .HasColumnType("datetime")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime?>("deleted_at")
+                        .HasColumnType("datetime")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("varchar(100)")
+                        .HasColumnName("name");
+
+                    b.Property<DateTime?>("updated_at")
+                        .HasColumnType("datetime")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("id");
+
+                    b.ToTable("tags");
+                });
+
             modelBuilder.Entity("dot_bioskop.Models.users", b =>
                 {
-                    b.Property<long>("id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
                     b.Property<string>("activation_key")
-                        .IsRequired()
                         .HasColumnType("varchar(12)")
                         .HasColumnName("activation_key");
 
@@ -252,6 +323,25 @@ namespace dot_bioskop.Migrations
                     b.Navigation("movie");
 
                     b.Navigation("studio");
+                });
+
+            modelBuilder.Entity("dot_bioskop.Models.order_items", b =>
+                {
+                    b.HasOne("dot_bioskop.Models.movie_schedules", "movie_schedule")
+                        .WithMany()
+                        .HasForeignKey("id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dot_bioskop.Models.orders", "order")
+                        .WithMany()
+                        .HasForeignKey("id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("movie_schedule");
+
+                    b.Navigation("order");
                 });
 
             modelBuilder.Entity("dot_bioskop.Models.orders", b =>

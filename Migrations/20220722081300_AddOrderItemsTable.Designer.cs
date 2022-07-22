@@ -9,8 +9,8 @@ using dot_bioskop.DBContexts;
 namespace dot_bioskop.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    [Migration("20220720052537_CreateTagsTable")]
-    partial class CreateTagsTable
+    [Migration("20220722081300_AddOrderItemsTable")]
+    partial class AddOrderItemsTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,8 +21,8 @@ namespace dot_bioskop.Migrations
 
             modelBuilder.Entity("dot_bioskop.Models.movie_schedules", b =>
                 {
-                    b.Property<long>("id")
-                        .HasColumnType("bigint")
+                    b.Property<int>("id")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
                     b.Property<DateTime>("created_at")
@@ -42,8 +42,8 @@ namespace dot_bioskop.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("end_time");
 
-                    b.Property<long>("movie_id")
-                        .HasColumnType("bigint")
+                    b.Property<int>("movie_id")
+                        .HasColumnType("int")
                         .HasColumnName("movie_id");
 
                     b.Property<double>("price")
@@ -55,8 +55,8 @@ namespace dot_bioskop.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("start_time");
 
-                    b.Property<long>("studio_id")
-                        .HasColumnType("bigint")
+                    b.Property<int>("studio_id")
+                        .HasColumnType("int")
                         .HasColumnName("studio_id");
 
                     b.Property<DateTime?>("updated_at")
@@ -70,9 +70,9 @@ namespace dot_bioskop.Migrations
 
             modelBuilder.Entity("dot_bioskop.Models.movies", b =>
                 {
-                    b.Property<long>("id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
                     b.Property<DateTime>("created_at")
@@ -113,8 +113,8 @@ namespace dot_bioskop.Migrations
 
             modelBuilder.Entity("dot_bioskop.Models.order_items", b =>
                 {
-                    b.Property<long>("id")
-                        .HasColumnType("bigint")
+                    b.Property<int>("id")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
                     b.Property<DateTime>("created_at")
@@ -125,12 +125,12 @@ namespace dot_bioskop.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("deleted_at");
 
-                    b.Property<long>("movie_schedule_id")
-                        .HasColumnType("bigint")
+                    b.Property<int>("movie_schedule_id")
+                        .HasColumnType("int")
                         .HasColumnName("movie_schedule_id");
 
-                    b.Property<long>("order_id")
-                        .HasColumnType("bigint")
+                    b.Property<int>("order_id")
+                        .HasColumnType("int")
                         .HasColumnName("order_id");
 
                     b.Property<double>("price")
@@ -156,8 +156,8 @@ namespace dot_bioskop.Migrations
 
             modelBuilder.Entity("dot_bioskop.Models.orders", b =>
                 {
-                    b.Property<long>("id")
-                        .HasColumnType("bigint")
+                    b.Property<int>("id")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
                     b.Property<DateTime>("created_at")
@@ -180,8 +180,8 @@ namespace dot_bioskop.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("updated_at");
 
-                    b.Property<long>("user_id")
-                        .HasColumnType("bigint")
+                    b.Property<int>("user_id")
+                        .HasColumnType("int")
                         .HasColumnName("user_id");
 
                     b.HasKey("id");
@@ -191,9 +191,9 @@ namespace dot_bioskop.Migrations
 
             modelBuilder.Entity("dot_bioskop.Models.studios", b =>
                 {
-                    b.Property<long>("id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
                     b.Property<DateTime>("created_at")
@@ -221,44 +221,14 @@ namespace dot_bioskop.Migrations
                     b.ToTable("studios");
                 });
 
-            modelBuilder.Entity("dot_bioskop.Models.tags", b =>
-                {
-                    b.Property<long>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
-
-                    b.Property<DateTime>("created_at")
-                        .HasColumnType("datetime")
-                        .HasColumnName("created_at");
-
-                    b.Property<DateTime?>("deleted_at")
-                        .HasColumnType("datetime")
-                        .HasColumnName("deleted_at");
-
-                    b.Property<string>("name")
-                        .IsRequired()
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("name");
-
-                    b.Property<DateTime?>("updated_at")
-                        .HasColumnType("datetime")
-                        .HasColumnName("updated_at");
-
-                    b.HasKey("id");
-
-                    b.ToTable("tags");
-                });
-
             modelBuilder.Entity("dot_bioskop.Models.users", b =>
                 {
-                    b.Property<long>("id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                        .HasColumnType("int")
                         .HasColumnName("id");
 
                     b.Property<string>("activation_key")
-                        .IsRequired()
                         .HasColumnType("varchar(12)")
                         .HasColumnName("activation_key");
 

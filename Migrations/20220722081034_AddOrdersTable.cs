@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dot_bioskop.Migrations
 {
-    public partial class CreateOrdersTable : Migration
+    public partial class AddOrdersTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -11,8 +11,8 @@ namespace dot_bioskop.Migrations
                 name: "orders",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false),
-                    user_id = table.Column<long>(type: "bigint", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false),
+                    user_id = table.Column<int>(type: "int", nullable: false),
                     payment_method = table.Column<int>(type: "int", nullable: false),
                     total_item_price = table.Column<double>(type: "double", nullable: false),
                     created_at = table.Column<DateTime>(type: "datetime", nullable: false),

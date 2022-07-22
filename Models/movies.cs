@@ -7,7 +7,7 @@ namespace dot_bioskop.Models
     [Table(name: "movies")]
     public class movies
     {
-        [Key, Column(name: "id", TypeName = "bigint")]
+        [Key, Column(name: "id", TypeName = "int")]
         public int id { get; set; }
         [Required, Column(name: "title", TypeName = "varchar(255)")]
         public string title { get; set; }

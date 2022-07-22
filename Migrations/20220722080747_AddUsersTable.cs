@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dot_bioskop.Migrations
 {
-    public partial class CreateUsersTable : Migration
+    public partial class AddUsersTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -15,7 +15,7 @@ namespace dot_bioskop.Migrations
                 name: "users",
                 columns: table => new
                 {
-                    id = table.Column<long>(type: "bigint", nullable: false)
+                    id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     name = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -26,7 +26,7 @@ namespace dot_bioskop.Migrations
                     avatar = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     is_admin = table.Column<int>(type: "int", nullable: false),
-                    activation_key = table.Column<string>(type: "varchar(12)", nullable: false)
+                    activation_key = table.Column<string>(type: "varchar(12)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     is_confirmed = table.Column<int>(type: "bool", nullable: false),
                     created_at = table.Column<DateTime>(type: "datetime", nullable: false),
