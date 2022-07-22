@@ -12,6 +12,11 @@ using MailKit.Net.Smtp;
 using System.Threading;
 using dot_bioskop.Datas;
 using dot_bioskop.DBContexts;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace dot_bioskop.Controllers
 {
@@ -22,9 +27,11 @@ namespace dot_bioskop.Controllers
         private readonly ILogger _logger;
         //private readonly IJwtAuthenticationManager jwtAuthenticationManager;
         //private readonly ICustomAuthenticationManager _customAuthenticationManager;
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private MyDBContext _myDBContext;
 
         public UsersController(ILogger<UsersController> logger,
+            IWebHostEnvironment webHostEnvironment,
             //IJwtAuthenticationManager jwtAuthenticationManager,
             //ICustomAuthenticationManager customAuthenticationManager,
             MyDBContext myDBContext
@@ -34,6 +41,7 @@ namespace dot_bioskop.Controllers
             //this.jwtAuthenticationManager = jwtAuthenticationManager;
             //_customAuthenticationManager = customAuthenticationManager;
             _myDBContext = myDBContext;
+            _webHostEnvironment = webHostEnvironment;
     }
 
         public static bool EmailValidation(string emailAddress)
@@ -117,6 +125,7 @@ namespace dot_bioskop.Controllers
                 if (token == null)
                     return Unauthorized();
                 _logger.LogInformation("Log login available user data (" + login + ")");
+                HttpContext.Session.SetString("loginId", existingUser.id.ToString());
                 return Ok(token);
             }
             else
@@ -192,7 +201,7 @@ namespace dot_bioskop.Controllers
 
         [AllowAnonymous]
         [HttpPost("/api/users")]
-        public IActionResult RegisterUser(users user)
+        public IActionResult RegisterUser(List<IFormFile> files, users user)
         {
             var _usersData = new SqlUsersData(_myDBContext);
             UsersValidation Obj = new UsersValidation();
@@ -207,6 +216,23 @@ namespace dot_bioskop.Controllers
                 user.activation_key = CreateRandomString(12);
                 string activation_key = user.activation_key;
                 user.is_confirmed = 0;
+
+                //file
+                if (files.Count == 0)
+                    return BadRequest();
+                string path = Path.Combine(_webHostEnvironment.ContentRootPath, "Files");
+
+                foreach (var file in files)
+                {
+                    var filePath = Path.Combine(path, file.FileName + DateTime.Now); 
+                    using(var stream = new FileStream(filePath,FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+                }
+
+                user.avatar = files[0].FileName;
+
                 ValidationResult Result = Obj.Validate(user);
                 if (Result.IsValid)
                 {
@@ -228,6 +254,28 @@ namespace dot_bioskop.Controllers
             {
                 return NotFound("Email tidak valid");
             }
+        }
+
+        [Authorize(Roles = "1, 2")]
+        [HttpPatch("/api/avatars")]
+        public IActionResult UpdateAvatar (List<IFormFile> files)
+        {
+            var _usersData = new SqlUsersData(_myDBContext);
+            if (files.Count == 0)
+                return BadRequest();
+            string path = Path.Combine(_webHostEnvironment.ContentRootPath, "Files");
+
+            foreach (var file in files)
+            {
+                var filePath = Path.Combine(path, file.FileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+                _usersData.UpdateUserAvatar(Int32.Parse(HttpContext.Session.GetString("loginId")), file.FileName.ToString(), DateTime.Now.ToString());
+            }
+
+            return Ok("Upload Successful");
         }
 
         [Authorize(Roles = "1")]

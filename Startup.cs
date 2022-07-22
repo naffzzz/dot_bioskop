@@ -43,11 +43,19 @@ namespace dot_bioskop
                 fv.ImplicitlyValidateRootCollectionElements = true;
                 fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             });
+            services.AddSwaggerGen(x =>
+            {
+                x.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "dot_bioskop", Version = "v1" });
+            });
 
             var key = "Memang begitulah cinta, deritanya tiada akhir";
 
             services.AddAuthentication("Basic").AddScheme<BasicAuthenticationOptions, CustomAuthenticationHandler>("Basic", null);
-
+            
+            services.AddDistributedMemoryCache();
+            services.AddSession(options => {
+                options.IdleTimeout = TimeSpan.FromHours(1);//You can set Time   
+            });
             //services.AddAuthentication(x =>
             //{
             //    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -75,7 +83,11 @@ namespace dot_bioskop
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(x => x.SwaggerEndpoint("/swagger/v1/swagger.json", "dot_bioskop v1"));
 
             //app.UseHttpsRedirection();
 
@@ -83,7 +95,9 @@ namespace dot_bioskop
 
             app.UseAuthentication();
 
-            app.UseAuthorization();
+            app.UseAuthorization(); 
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

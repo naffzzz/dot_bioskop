@@ -2,6 +2,7 @@
 using System.Linq;
 using dot_bioskop.Models;
 using dot_bioskop.DBContexts;
+using System;
 
 namespace dot_bioskop.Datas
 {
@@ -76,13 +77,25 @@ namespace dot_bioskop.Datas
                 existingUser.name = user.name;
                 existingUser.email = user.email;
                 existingUser.password = user.password;
-                existingUser.avatar = user.avatar;
                 existingUser.is_admin = user.is_admin;
                 existingUser.updated_at = user.updated_at;
                 _myDBContext.users.Update(existingUser);
                 _myDBContext.SaveChanges();
             }
             return user;
+        }
+
+        public users UpdateUserAvatar(int id, string avatar, string updated_at)
+        {
+            var existingUser = _myDBContext.users.Where(b => b.id == id).FirstOrDefault();
+            if (existingUser != null)
+            {
+                existingUser.avatar = avatar;
+                existingUser.updated_at = DateTime.Parse(updated_at);
+                _myDBContext.users.Update(existingUser);
+                _myDBContext.SaveChanges();
+            }
+            return existingUser;
         }
     }
 }
